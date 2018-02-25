@@ -1,14 +1,9 @@
 #pragma once
-#include <misaka/core/gc.hpp>
-#include <misaka/core/tensor.hpp>
-
+#include <cassert>
 #include <memory>
 #include <utility>
 
-namespace
-{
-auto gc = GC<tensor_t>();
-}
+#include <misaka/core/tensor.hpp>
 
 struct dataset_t {
     using item_t = std::pair<tensor_ref_t, tensor_ref_t>;
@@ -17,30 +12,45 @@ struct dataset_t {
 
     // virtual item_t next_barch() {} // TODO: next_batch
 
-    virtual bool has_next() { return false; }
+    virtual bool has_next() const = 0;
     virtual ~dataset_t() {}
 };
 
-struct fake_dataset_t : dataset_t {
-    uint64_t step = 0;
-    fake_dataset_t() {}
+struct range_t {
+    using item_t = dataset_t::item_t;
+    dataset_t &ds;
 
-    item_t next() override
+    explicit range_t(dataset_t &ds) : ds(ds) {}
+
+    struct iter_t {
+        dataset_t *ds;
+        std::unique_ptr<item_t> next;
+        iter_t(dataset_t *ds) : ds(ds) { this->operator++(); }
+        bool operator!=(const iter_t &it) const { return ds != it.ds; }
+        void operator++()
+        {
+            if (ds && ds->has_next()) {
+                auto item = new item_t(ds->next());
+                next.reset(item);
+            } else {
+                ds = nullptr;
+            }
+        }
+        item_t operator*() { return item_t(*next); }
+    };
+
+    iter_t begin()
     {
-        DEBUG(__func__);
-        auto shape = shape_t(1);
-        auto t1 = gc(new tensor_t(shape));
-        auto t2 = gc(new tensor_t(shape));
-        return item_t(ref(*t1), ref(*t2));
+        if (ds.has_next()) {
+            return iter_t(&ds);
+        }
+        return end();
     }
 
-    bool has_next() override
-    {
-        DEBUG(__func__);
-        step++;
-        return step < 10;
-    }
+    iter_t end() { return iter_t(nullptr); }
 };
+
+inline range_t range(dataset_t &ds) { return range_t(ds); }
 
 struct simple_dataset_t : dataset_t {
     using owner_t = std::unique_ptr<tensor_t>;
@@ -55,16 +65,13 @@ struct simple_dataset_t : dataset_t {
         : images(owner_t(images)), labels(owner_t(labels)), idx(0),
           n(images->shape.len())
     {
-        DEBUG(__func__);
     }
 
-    bool has_next() override { return idx < n; }
+    bool has_next() const override { return idx < n; }
 
     item_t next() override
     {
-        DEBUG(__func__);
-        bool ok = has_next();
-        assert(ok);
+        assert(has_next());
         auto i = idx++;
         return item_t((*images)[i], (*labels)[i]);
     }
