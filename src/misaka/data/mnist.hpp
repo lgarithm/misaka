@@ -6,13 +6,11 @@
 #include <misaka/core/tensor.hpp>
 #include <misaka/data/dataset.hpp>
 
-tensor_t *_load_mnist(const char *const name)
+tensor_t *_load_mnist(const std::string &name)
 {
-    DEBUG(__func__);
-    const char *const prefix = "var/data/mnist";
-    char filename[1024];
-    sprintf(filename, "%s/%s/%s", getenv("HOME"), prefix, name);
-    return _load_idx_file(filename);
+    const auto filename =
+        std::string(getenv("HOME")) + "/var/data/mnist/" + name;
+    return _load_idx_file(filename.c_str());
 }
 
 template <typename T> tensor_t *make_onehot(const tensor_t &tensor, uint32_t k)
@@ -35,10 +33,10 @@ template <typename T> tensor_t *make_onehot(const tensor_t &tensor, uint32_t k)
     return distro_;
 }
 
-dataset_t *load_mnist_data(const char *name)
+dataset_t *load_mnist_data(const std::string &name)
 {
     DEBUG(__func__);
-    tensor_t *images = _load_mnist("train-images-idx3-ubyte");
+    tensor_t *images = _load_mnist(name + "-images-idx3-ubyte");
     tensor_t *images_ = cast_to<float>(r_tensor_ref_t<uint8_t>(*images));
     delete images;
     {
@@ -48,14 +46,10 @@ dataset_t *load_mnist_data(const char *name)
             r.data[i] /= 255.0;
         }
     }
-    tensor_t *labels = _load_mnist("train-labels-idx1-ubyte");
+    tensor_t *labels = _load_mnist(name + "-labels-idx1-ubyte");
     tensor_t *labels_ = make_onehot<float>(*labels, 10);
     delete labels;
     return new simple_dataset_t(images_, labels_);
 }
 
-dataset_t *load_mnist()
-{
-    DEBUG(__func__);
-    return load_mnist_data("train");
-}
+dataset_t *load_mnist(const char *const name) { return load_mnist_data(name); }

@@ -54,8 +54,8 @@ int main()
     shape_t *image_shape = make_shape(3, width, height, depth);
     model_t *model = slp_model(image_shape, n);
     trainer_t *trainer = new_trainer(model, op_xentropy, opt_sgd);
-    dataset_t *ds1 = load_mnist();
-    dataset_t *ds2 = load_mnist(); // TODO: load test data
+    dataset_t *ds1 = load_mnist("train");
+    dataset_t *ds2 = load_mnist("t10k");
     run_trainer(trainer, ds1);
     test_trainer(trainer, ds2);
     free_shape(image_shape);
