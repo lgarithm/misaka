@@ -17,10 +17,7 @@ struct dtypes_t {
     const uint8_t f64;
 };
 
-// TODO: define dtypes const struct
-// extern dtypes_t dtypes;
-
-#define DTYPE_FLOAT 0x0D
+extern const dtypes_t dtypes;
 
 const char *version();
 

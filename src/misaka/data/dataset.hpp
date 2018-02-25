@@ -76,3 +76,36 @@ struct simple_dataset_t : dataset_t {
         return item_t((*images)[i], (*labels)[i]);
     }
 };
+
+inline std::string data_dir()
+{
+    return std::string(getenv("HOME")) + "/var/data";
+}
+
+template <typename T> tensor_t *make_onehot(const tensor_t &tensor, uint32_t k)
+{
+    auto dims = std::vector<uint32_t>(tensor.shape.dims);
+    dims.push_back(k);
+    auto distro_ = new tensor_t(shape_t(dims), idx_type<T>::type);
+    r_tensor_ref_t<T> distro(*distro_);
+    r_tensor_ref_t<uint8_t> r(tensor); // TODO: support other uint types
+    auto n = tensor.shape.dim();
+    for (auto i = 0; i < n; ++i) {
+        auto off = r.data[i];
+        if (0 <= off && off < k) {
+            distro.data[i * k + off] = 1;
+        } else {
+            // TODO: print a warning msg
+            assert(false);
+        }
+    }
+    return distro_;
+}
+
+template <typename T> void normalize(const r_tensor_ref_t<T> &r, T b)
+{
+    auto n = r.shape.dim();
+    for (auto i = 0; i < n; ++i) {
+        r.data[i] /= b;
+    }
+}

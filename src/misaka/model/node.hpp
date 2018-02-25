@@ -15,9 +15,12 @@ struct node_t {
     // int idx; // TODO: support index
     std::string name;
     const shape_t shape;
+    const uint8_t dtype;
+
+    static constexpr const auto default_dtype = idx_type<float>::type;
 
     node_t(const shape_t &shape, const char *pname = nullptr)
-        : name(create_name(pname)), shape(shape)
+        : name(create_name(pname)), shape(shape), dtype(default_dtype)
     {
         LOG_NODE_USAGE(shape, name);
     }
@@ -52,7 +55,8 @@ struct parameter_node_t : node_t {
     tensor_t _gradient;
 
     parameter_node_t(const shape_t &shape, const std::string &name)
-        : node_t(shape), name(name), _value(shape), _gradient(shape)
+        : node_t(shape), name(name), _value(shape, dtype),
+          _gradient(shape, dtype)
     {
     }
 
@@ -90,12 +94,14 @@ struct placeholder_node_t : node_t {
     tensor_t _gradient; // TODO: remove it
 
     placeholder_node_t(const shape_t &shape, const std::string &name)
-        : node_t(shape), name(name), _gradient(shape)
+        : node_t(shape), name(name), _gradient(shape, dtype)
     {
     }
 
     void bind(const tensor_ref_t &r) override
     {
+        DEBUG(__func__);
+        assert(r.dtype == dtype);
         _value.reset(new tensor_ref_t(r));
     }
 
