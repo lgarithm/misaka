@@ -1,0 +1,24 @@
+misaka network
+======
+
+A distributive AI platform.
+
+## Concepts
+
+* Agent
+An intelligent entity.
+An agent will be represented by a FST (Finite State Transducer).
+
+* Tensor
+A tensor has **shape** and **rank**.
+
+* Operator
+TBD
+
+* Model
+TBD
+
+* Layer
+TBD
+
+
