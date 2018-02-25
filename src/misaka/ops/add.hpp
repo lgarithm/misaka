@@ -4,7 +4,6 @@
 #include <misaka/core/shape.hpp>
 #include <misaka/linag/linag.hpp>
 #include <misaka/model/operator.hpp>
-#include <teavana/operators/add.hpp>
 
 struct add {
     constexpr static uint8_t arity = 2;

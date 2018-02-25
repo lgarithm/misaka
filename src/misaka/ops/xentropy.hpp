@@ -2,7 +2,6 @@
 #include <misaka.h>
 #include <misaka/core/debug.hpp>
 #include <misaka/model/operator.hpp>
-#include <teavana/operators/cross_entropy.hpp>
 
 struct xentropy {
     constexpr static uint8_t arity = 2;
