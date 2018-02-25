@@ -1,5 +1,6 @@
 #pragma once
 #include <cassert>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -122,10 +123,7 @@ struct operator_node_t : node_t {
         for (auto i = 0; i < op.arity; ++i) {
             shape_list.shapes.push_back(nodes[i]->shape);
         }
-        shape_t *p_shape = op.infer(&shape_list);
-        shape_t output_shape = *p_shape;
-        free_shape(p_shape);
-        return output_shape;
+        return *std::unique_ptr<shape_t>(op.infer(&shape_list));
     }
 
     using input_list_t = std::vector<node_t *>;

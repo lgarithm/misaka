@@ -40,11 +40,8 @@ typedef shape_t *(shape_func_t)(const shape_list_t *);
 typedef void(forward_func_t)(forward_ctx_t *);
 typedef void(backward_func_t)(backward_ctx_t *);
 
-// shape_t *new_shape(uint8_t); // make_shape should be used instead
-// void init_shape(shape_t *, uint32_t *);
 shape_t *make_shape(int, ...);
 void free_shape(shape_t *);
-
 uint32_t shape_dim(const shape_t *);
 uint32_t shape_rank(const shape_t *);
 
