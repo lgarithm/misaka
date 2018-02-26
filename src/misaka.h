@@ -52,8 +52,8 @@ model_ctx_t *new_model_ctx();
 model_t *new_model(model_ctx_t *, node_t *, node_t *);
 void free_model(model_t *);
 
-node_t *make_placeholder(model_ctx_t *, shape_t *);
-node_t *make_parameter(model_ctx_t *, shape_t *);
+node_t *make_placeholder(model_ctx_t *, const shape_t *);
+node_t *make_parameter(model_ctx_t *, const shape_t *);
 
 typedef node_t *pnode_list_t[];
 node_t *make_operator(model_ctx_t *, operator_t *, pnode_list_t);
@@ -64,6 +64,7 @@ operator_t *register_op(const char *const, uint8_t, shape_func_t,
                         forward_func_t, backward_func_t);
 extern operator_t *op_add;
 extern operator_t *op_mul;
+extern operator_t *op_relu;
 extern operator_t *op_softmax;
 extern operator_t *op_xentropy;
 

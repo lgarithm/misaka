@@ -9,12 +9,13 @@
 * open source on github (done)
 * integrate with travis-ci (done)
 * wrap node (done)
+* load cifar (done)
+* implement adam optimizer
 * mini batch
 * add configure
 * add C++ binding
 * add Haskell binding
 * reverse test binary name
-* load cifar
 * run clang-tidy
 * run iwyu
 * add namespace
