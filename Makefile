@@ -40,6 +40,9 @@ python_example: libmisaka
 image:
 	docker build .
 
+alpine_image:
+	docker build -f Dockerfile.alpine .
+
 lint:
 	cpplint src/misaka/*.h
 
@@ -54,7 +57,7 @@ format:
 	yapf -i langs/python/misaka.py
 
 tidy:
-	 ./utils/tidy.sh
+	./utils/tidy.sh
 
 test: libmisaka
 	./utils/test.sh
