@@ -87,7 +87,9 @@ void test_trainer(trainer_t *, dataset_t *);
 dataset_t *load_mnist(const char *const); // train | t10k
 dataset_t *load_cifar();
 
+// unstable APIs
 tensor_t *_load_idx_file(const char *filename);
+void experiment(trainer_t *, dataset_t *, dataset_t *);
 
 #ifdef __cplusplus
 }

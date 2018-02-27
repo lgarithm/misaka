@@ -9,8 +9,8 @@ struct dataset_t {
     using item_t = std::pair<tensor_ref_t, tensor_ref_t>;
 
     virtual item_t next() = 0;
-
     // virtual item_t next_barch() {} // TODO: next_batch
+    virtual void reset() = 0;
 
     virtual bool has_next() const = 0;
     virtual ~dataset_t() {}
@@ -50,12 +50,16 @@ struct range_t {
     iter_t end() { return iter_t(nullptr); }
 };
 
-inline range_t range(dataset_t &ds) { return range_t(ds); }
+inline range_t range(dataset_t &ds)
+{
+    ds.reset();
+    return range_t(ds);
+}
 
 struct simple_dataset_t : dataset_t {
     using owner_t = std::unique_ptr<tensor_t>;
 
-    int idx;
+    int idx; // TODO: move idx to iterator
     uint32_t n;
 
     owner_t images;
@@ -68,7 +72,7 @@ struct simple_dataset_t : dataset_t {
     }
 
     bool has_next() const override { return idx < n; }
-
+    void reset() override { idx = 0; }
     item_t next() override
     {
         assert(has_next());
