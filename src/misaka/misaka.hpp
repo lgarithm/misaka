@@ -1,5 +1,6 @@
 #pragma once
 #include <misaka/core/shape.hpp>
+#include <misaka/model/layer.hpp>
 #include <misaka/model/model.hpp>
 #include <misaka/train/initializers.hpp>
 
