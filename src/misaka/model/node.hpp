@@ -63,29 +63,9 @@ struct parameter_node_t : node_t {
     tensor_ref_t value() const override { return ref(_value); }
     tensor_ref_t gradient() const override { return ref(_gradient); }
 
-    void forward() const override
-    {
-        const auto name = std::string(__func__) + "@" + this->name;
-        DEBUG(name.c_str());
-    }
+    void forward() const override { /* noop */}
 
-    void backward() const override
-    {
-        const auto name = std::string(__func__) + "@" + this->name;
-        DEBUG(name.c_str());
-    }
-
-    void learn() const
-    {
-        using T = float;
-        T eta = 1e-3; // TODO: make it configrable
-        r_tensor_ref_t<T> x(_value);
-        r_tensor_ref_t<T> g(_gradient);
-        auto n = equally(_value.shape.dim(), _gradient.shape.dim());
-        for (auto i = 0; i < n; ++i) {
-            x.data[i] -= g.data[i] * eta;
-        }
-    }
+    void backward() const override { /* noop */}
 };
 
 struct placeholder_node_t : node_t {
@@ -125,11 +105,22 @@ struct placeholder_node_t : node_t {
 struct operator_node_t : node_t {
     static shape_t infer_shape(const operator_t &op, node_t *nodes[])
     {
+        const auto name = std::string(__func__) + "@" + op.name;
+        DEBUG(name.c_str());
         shape_list_t shape_list;
+        std::string sig;
         for (auto i = 0; i < op.arity; ++i) {
             shape_list.shapes.push_back(nodes[i]->shape);
+            if (sig.size() > 0) {
+                sig += ", ";
+            }
+            sig += std::to_string(nodes[i]->shape);
         }
-        return *std::unique_ptr<shape_t>(op.infer(&shape_list));
+        printf("inputs shapes: %s\n", sig.c_str());
+        auto out_shape = op.infer(&shape_list);
+        printf("[infer_shape] %s : %s -> %s\n", op.name.c_str(), sig.c_str(),
+               std::to_string(*out_shape).c_str());
+        return *std::unique_ptr<shape_t>(out_shape);
     }
 
     using input_list_t = std::vector<node_t *>;

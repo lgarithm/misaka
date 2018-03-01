@@ -11,11 +11,10 @@ struct add {
     static shape_t *infer(const shape_list_t *shape_list)
     {
         assert(shape_list->shapes.size() == arity);
-        auto shape = new shape_t(shape_list->shapes[0]);
-        return shape;
+        return new shape_t((*shape_list)[0]);
     }
 
-    using T = float;
+    using T = float; // TODO: cast based on dtype
 
     struct forward : forward_ctx_t {
         void operator()() const

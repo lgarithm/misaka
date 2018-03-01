@@ -9,7 +9,8 @@ struct softmax {
 
     static shape_t *infer(const shape_list_t *shape_list)
     {
-        return new shape_t(shape_list->shapes[0]);
+        assert(shape_list->shapes.size() == arity);
+        return new shape_t((*shape_list)[0]);
     }
 
     template <typename T>
