@@ -58,7 +58,7 @@ node_t *make_parameter(model_ctx_t *, const shape_t *);
 
 typedef node_t *pnode_list_t[];
 node_t *make_operator(model_ctx_t *, operator_t *, pnode_list_t);
-node_t *wrap(model_ctx_t *, shape_t *, node_t *);
+node_t *wrap_node(model_ctx_t *, shape_t *, node_t *);
 
 // operators
 operator_t *register_op(const char *const, uint8_t, shape_func_t,

@@ -48,8 +48,7 @@ struct conv_layer_t : layer_t {
         auto c = [&]() {
             assert(x->shape.rank() == 3);
             const auto[h, w, c] = cast<3>(x->shape.dims);
-            shape_t wrap_shape(1, h, w, c);
-            x = ctx.wrap(wrap_shape, *x);
+            x = ctx.wrap(shape_t(1, h, w, c), *x);
             return c;
         }();
         auto w = ctx.make_parameter(shape_t(r, s, c, d));
@@ -58,8 +57,7 @@ struct conv_layer_t : layer_t {
         auto y = ctx.make_operator(*op_conv_nhwc, args1);
         {
             const auto[_1, h, w, c] = cast<4>(y->shape.dims);
-            shape_t wrap_shape(h, w, c);
-            y = ctx.wrap(wrap_shape, *y);
+            y = ctx.wrap(shape_t(h, w, c), *y);
         }
         // TODO: add bias
         return y;
