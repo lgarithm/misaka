@@ -3,6 +3,8 @@
 #include <cstdint>
 
 #include <array>
+#include <functional>
+#include <numeric>
 #include <string>
 #include <utility>
 #include <vector>
@@ -19,12 +21,8 @@ struct shape_t {
 
     uint32_t dim() const
     {
-        // TODO: use std::reduce when it's available
-        uint32_t d = 1;
-        for (auto i : dims) {
-            d *= i;
-        }
-        return d;
+        return std::accumulate(dims.begin(), dims.end(), 1,
+                               std::multiplies<uint32_t>());
     }
 
     uint32_t len() const
@@ -41,6 +39,7 @@ struct shape_t {
 struct shape_list_t {
     std::vector<shape_t> shapes;
     shape_t operator[](int i) const { return shapes[i]; }
+    uint8_t size() const { return shapes.size(); }
 };
 
 template <typename T, size_t... i>
