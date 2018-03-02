@@ -5,7 +5,7 @@
 template <typename T> struct matrix_ref_t {
     const uint32_t m;
     const uint32_t n;
-    T *data;
+    T *const data;
 
     matrix_ref_t(uint32_t m, uint32_t n, T *data) : m(m), n(n), data(data) {}
 
@@ -17,7 +17,7 @@ template <typename T> struct matrix_ref_t {
 
 template <typename T> struct vector_ref_t {
     const uint32_t n;
-    T *data;
+    T *const data;
 
     vector_ref_t(uint32_t n, T *data) : n(n), data(data) {}
 

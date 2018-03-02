@@ -19,7 +19,7 @@ struct tensor_t {
     const shape_t shape;
     const uint8_t dtype;
     const std::unique_ptr<uint8_t[]> _data;
-    void *data;
+    void *const data;
 
     explicit tensor_t(const shape_t &shape,
                       uint8_t dtype = idx_type<float>::type)
@@ -38,7 +38,7 @@ struct tensor_t {
 struct tensor_ref_t {
     const shape_t shape;
     const uint8_t dtype;
-    void *data;
+    void *const data;
 
     tensor_ref_t(const shape_t &shape, uint8_t dtype, void *data)
         : shape(shape), dtype(dtype), data(data)
@@ -65,7 +65,7 @@ inline tensor_ref_t ref(const tensor_t &tensor) { return tensor_ref_t(tensor); }
 
 template <typename R> struct r_tensor_ref_t {
     const shape_t shape;
-    R *data;
+    R *const data;
 
     explicit r_tensor_ref_t(const tensor_t &t)
         : shape(t.shape), data((R *)t.data)
