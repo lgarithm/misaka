@@ -25,19 +25,12 @@ struct add {
         }
     };
 
-    template <typename T>
-    static void assign(const vector_ref_t<T> &a, const vector_ref_t<T> &b)
-    {
-        auto n = equally(a.n, b.n);
-        memcpy(a.data, b.data, n * sizeof(T));
-    }
-
     struct backward : backward_ctx_t {
         void operator()() const
         {
-            auto g = as_vector_ref<T>(output_gradient);
-            assign(as_vector_ref<T>(input_gradients[0]), g);
-            assign(as_vector_ref<T>(input_gradients[1]), g);
+            auto g = r_tensor_ref_t<T>(output_gradient);
+            r_tensor_ref_t<T>(input_gradients[0]).copy(g);
+            r_tensor_ref_t<T>(input_gradients[1]).copy(g);
         }
     };
 };
