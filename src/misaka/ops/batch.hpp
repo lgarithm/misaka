@@ -46,13 +46,11 @@ template <typename O, uint8_t pos> struct batch {
         assert(shapes->size() == arity);
         const auto batched_shape = (*shapes)[pos];
         assert(batched_shape.rank() > 1);
-        const auto batch_size = batched_shape.len();
         const auto new_shapes =
             change_ith(pos, shapes->shapes, batched_shape.sub());
-        shape_list_t new_shape_list(new_shapes);
-        auto out_shape_ = std::unique_ptr<shape_t>(O::infer(&new_shape_list));
-        auto out_shape = n_batch(batch_size, *out_shape_);
-        return new shape_t(out_shape);
+        const auto out_shape = std::unique_ptr<shape_t>(
+            O::infer(std::make_unique<shape_list_t>(new_shapes).get()));
+        return new shape_t(n_batch(batched_shape.len(), *out_shape));
     }
 
     using T = float; // TODO: cast based on dtype
