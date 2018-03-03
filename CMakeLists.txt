@@ -13,25 +13,14 @@ if (${USE_OPENBLAS})
     add_definitions(-DMISAKA_USE_CBLAS)
 endif()
 
-
 include_directories(${CMAKE_SOURCE_DIR}/src)
 link_directories(${LIBRARY_OUTPUT_PATH})
 
-# find_package(Threads REQUIRED)
-
 file(GLOB srcs src/misaka/**/*.cpp src/teavana/*.cpp)
-file(GLOB tests src/misaka/**/*_test.*)
-list(REMOVE_ITEM srcs ${tests})
 add_library(misaka SHARED ${srcs})
 if (USE_OPENBLAS)
     target_link_libraries(misaka openblas)
 endif()
-
-foreach(main ${tests})
-    get_filename_component(bin_name ${main} NAME_WE)
-    add_executable(${bin_name} ${main})
-    target_link_libraries(${bin_name} misaka)
-endforeach()
 
 file(GLOB examples examples/c/*.c)
 foreach(main ${examples})
