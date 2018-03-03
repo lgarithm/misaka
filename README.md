@@ -1,4 +1,4 @@
-# CrystalNet: A minimalist deep learning library in 1K-lines of modern C and C++.
+# CrystalNet: A deep learning engine in 1K lines of modern C and C++.
 
 This project is still under active and fast development. We are going to release more details once it is ready.
 
@@ -17,15 +17,15 @@ $ ./build/bin/mnist_slp_c
 
 ### Minimalist style
 
-The core library is written in 1K lines of C and C++, which means that it is super easy for you to know everything running underneath. No secret! This also has another implication meaning that this library is suitable for students and hackers. Students can quickly learn the essential pieces of a modern deep learning system; while hackers can quickly experiment crazy ideas in this minimal library.
+The core engine is written in 1K lines of C and C++, which means that it is super easy for you to know everything running underneath. No secret! This also has another implication meaning that this engine is suitable for students and hackers. Students can quickly learn the essential pieces of a modern deep learning system; while hackers can quickly experiment crazy ideas in this minimal engine.
 
 ### Modular and extensibility
 
-The library has a modular core runtime. It is very easy to experiment ideas of, for example, memory management, synchronization, and matrix multiplication, with an aim of optimizing the performance bottlenecks that can occur at any stacks of a deep learning system. The library also has a C core which means that you can easily extend it with  language bindings, for example, Python, Lua, Golang and Rust.
+The engine has a modular core runtime. It is very easy to experiment ideas of, for example, memory management, synchronization, and matrix multiplication, with an aim of optimizing the performance bottlenecks that can occur at any stacks of a deep learning system. The engine also has a pure C interface. This means that you can easily extend it with  language bindings, for example, Python, Lua, Golang and Rust.
 
 ### High-performance
 
-TBD
+The 1K lines-long engine is able to achieve high CPU and GPU performance (comparable to Google TensorFlow).
 
 ## Concepts
 
