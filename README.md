@@ -1,5 +1,6 @@
-# CrystalNet: A deep learning engine in 1K lines of modern C and C++.
+# CrystalNet: A performant deep learning engine in 1K lines.
 
+CrystalNet is a new deep learning engine for minimalists. It is written by modern C and C++, and its core library is less than 1K lines of code. 
 This project is still under active and fast development. We are going to release more details once it is ready.
 
 
