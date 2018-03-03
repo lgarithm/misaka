@@ -50,7 +50,7 @@ struct trainer_t {
     {
         DEBUG(__func__);
         int step = 0;
-        for (auto[image, label_] : range(ds)) {
+        for (auto[image, label_] : ds) {
             ++step;
             model->input->bind(image);
             label->bind(label_);
@@ -74,7 +74,7 @@ struct trainer_t {
         DEBUG(__func__);
         uint32_t step = 0;
         uint32_t yes = 0;
-        for (auto[image, label_] : range(ds)) {
+        for (auto[image, label_] : ds) {
             ++step;
             model->input->bind(image);
             label->bind(label_);
