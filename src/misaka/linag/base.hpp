@@ -67,13 +67,5 @@ template <typename T> auto as_row_matrix_ref(const vector_ref_t<T> &vector)
 
 template <typename T> uint32_t argmax(const vector_ref_t<T> &vector)
 {
-    uint32_t idx = 0;
-    T max_val = vector.data[0];
-    for (auto i = 1; i < vector.n; ++i) {
-        if (vector.data[i] > max_val) {
-            max_val = vector.data[i];
-            idx = i;
-        }
-    }
-    return idx;
+    return std::max_element(vector.data, vector.data + vector.n) - vector.data;
 }
