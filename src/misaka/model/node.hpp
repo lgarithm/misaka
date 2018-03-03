@@ -105,10 +105,10 @@ struct operator_node_t : node_t {
     {
         const auto name = std::string(__func__) + "@" + op.name;
         DEBUG(name.c_str());
-        shape_list_t shape_list;
+        std::vector<shape_t> shapes;
         std::string sig;
         for (auto i = 0; i < op.arity; ++i) {
-            shape_list.shapes.push_back(nodes[i]->shape);
+            shapes.push_back(nodes[i]->shape);
             if (sig.size() > 0) {
                 sig += ", ";
             }
@@ -116,7 +116,7 @@ struct operator_node_t : node_t {
         }
         printf("[D] infer shape of %s from inputs shapes: %s\n",
                op.name.c_str(), sig.c_str());
-        auto out_shape = op.infer(&shape_list);
+        auto out_shape = op.infer(std::make_unique<shape_list_t>(shapes).get());
         printf("[D] -> %s\n", std::to_string(*out_shape).c_str());
         return *std::unique_ptr<shape_t>(out_shape);
     }

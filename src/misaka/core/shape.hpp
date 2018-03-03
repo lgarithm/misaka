@@ -45,7 +45,10 @@ struct shape_t {
 };
 
 struct shape_list_t {
-    std::vector<shape_t> shapes;
+    const std::vector<shape_t> shapes;
+    explicit shape_list_t(const std::vector<shape_t> &shapes) : shapes(shapes)
+    {
+    }
     shape_t operator[](int i) const { return shapes[i]; }
     uint8_t size() const { return shapes.size(); }
 };

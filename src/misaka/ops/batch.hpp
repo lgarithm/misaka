@@ -3,32 +3,28 @@
 #include <teavana/range.hpp>
 using tea::range;
 
+template <typename T>
+auto change_ith(const uint8_t pos, const std::vector<T> &items,
+                const T &new_item)
+{
+    std::vector<T> new_items;
+    for (auto i : range(items.size())) {
+        new_items.push_back(i == pos ? new_item : items[i]);
+    }
+    return new_items;
+}
+
 forward_ctx_t unbatch(uint8_t pos, uint8_t idx, const forward_ctx_t &ctx)
 {
-    std::vector<tensor_ref_t> inputs;
-    for (auto i : range(ctx.inputs._args.size())) {
-        if (i == pos) {
-            inputs.push_back(ctx.inputs[i][idx]);
-        } else {
-            inputs.push_back(ctx.inputs[i]);
-        }
-    }
+    const auto inputs = change_ith(pos, ctx.inputs._args, ctx.inputs[pos][idx]);
     return forward_ctx_t(tensor_ref_list_t(inputs), ctx.output[idx]);
 }
 
 backward_ctx_t unbatch(uint8_t pos, uint8_t idx, const backward_ctx_t &ctx)
 {
-    std::vector<tensor_ref_t> inputs;
-    std::vector<tensor_ref_t> input_gradients;
-    for (auto i : range(ctx.inputs._args.size())) {
-        if (i == pos) {
-            inputs.push_back(ctx.inputs[i][idx]);
-            input_gradients.push_back(ctx.input_gradients[i][idx]);
-        } else {
-            inputs.push_back(ctx.inputs[i]);
-            input_gradients.push_back(ctx.input_gradients[i]);
-        }
-    }
+    const auto inputs = change_ith(pos, ctx.inputs._args, ctx.inputs[pos][idx]);
+    const auto input_gradients = change_ith(pos, ctx.input_gradients._args,
+                                            ctx.input_gradients[pos][idx]);
     return backward_ctx_t(tensor_ref_list_t(inputs), ctx.output[idx],
                           tensor_ref_list_t(input_gradients),
                           ctx.output_gradient[idx]);
@@ -51,15 +47,9 @@ template <typename O, uint8_t pos> struct batch {
         const auto batched_shape = (*shapes)[pos];
         assert(batched_shape.rank() > 1);
         const auto batch_size = batched_shape.len();
-        const auto original_shape = batched_shape.sub();
-        shape_list_t new_shape_list;
-        for (auto i = 0; i < arity; ++i) {
-            if (i == pos) {
-                new_shape_list.shapes.push_back(original_shape);
-            } else {
-                new_shape_list.shapes.push_back((*shapes)[i]);
-            }
-        }
+        const auto new_shapes =
+            change_ith(pos, shapes->shapes, batched_shape.sub());
+        shape_list_t new_shape_list(new_shapes);
         auto out_shape_ = std::unique_ptr<shape_t>(O::infer(&new_shape_list));
         auto out_shape = n_batch(batch_size, *out_shape_);
         return new shape_t(out_shape);
