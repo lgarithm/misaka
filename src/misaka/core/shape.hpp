@@ -10,6 +10,8 @@
 #include <vector>
 
 struct shape_t {
+    const std::vector<uint32_t> dims;
+
     template <typename... T>
     explicit shape_t(T... dims) : dims({static_cast<uint32_t>(dims)...})
     {
@@ -33,7 +35,13 @@ struct shape_t {
         return 1;
     }
 
-    const std::vector<uint32_t> dims;
+    shape_t sub() const
+    {
+        if (dims.size() > 0) {
+            return shape_t(std::vector<uint32_t>(dims.begin() + 1, dims.end()));
+        }
+        return *this;
+    }
 };
 
 struct shape_list_t {

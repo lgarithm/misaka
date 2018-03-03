@@ -50,9 +50,8 @@ template <typename O, uint8_t pos> struct batch {
         assert(shapes->size() == arity);
         const auto batched_shape = (*shapes)[pos];
         assert(batched_shape.rank() > 1);
-        const auto batch_size = batched_shape.dims[0];
-        const auto original_shape = shape_t(std::vector<uint32_t>(
-            batched_shape.dims.begin() + 1, batched_shape.dims.end()));
+        const auto batch_size = batched_shape.len();
+        const auto original_shape = batched_shape.sub();
         shape_list_t new_shape_list;
         for (auto i = 0; i < arity; ++i) {
             if (i == pos) {
