@@ -26,7 +26,7 @@ struct range_t {
     struct iter_t {
         dataset_t *ds;
         std::unique_ptr<item_t> next;
-        iter_t(dataset_t *ds) : ds(ds) { this->operator++(); }
+        explicit iter_t(dataset_t *ds) : ds(ds) { this->operator++(); }
         bool operator!=(const iter_t &it) const { return ds != it.ds; }
         void operator++()
         {
@@ -90,7 +90,7 @@ struct simple_dataset_t : dataset_t {
     {
         assert(has_next());
         auto i = idx++;
-        return item_t((*images)[i], (*labels)[i]);
+        return item_t(ref(*images)[i], ref(*labels)[i]);
     }
     const shape_t *image_shape() const override { return &_image_shape; }
     const shape_t *label_shape() const override { return &_label_shape; }

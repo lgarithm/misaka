@@ -50,12 +50,11 @@ struct node_t {
 };
 
 struct parameter_node_t : node_t {
-    const std::string name;
     tensor_t _value;
     tensor_t _gradient;
 
     parameter_node_t(const shape_t &shape, const std::string &name)
-        : node_t(shape), name(name), _value(shape, dtype),
+        : node_t(shape, name.c_str()), _value(shape, dtype),
           _gradient(shape, dtype)
     {
     }
@@ -69,12 +68,11 @@ struct parameter_node_t : node_t {
 };
 
 struct placeholder_node_t : node_t {
-    const std::string name;
     std::unique_ptr<tensor_ref_t> _value;
     tensor_t _gradient; // TODO: remove it
 
     placeholder_node_t(const shape_t &shape, const std::string &name)
-        : node_t(shape), name(name), _gradient(shape, dtype)
+        : node_t(shape, name.c_str()), _gradient(shape, dtype)
     {
     }
 
@@ -116,10 +114,10 @@ struct operator_node_t : node_t {
             }
             sig += std::to_string(nodes[i]->shape);
         }
-        printf("inputs shapes: %s\n", sig.c_str());
+        printf("[D] infer shape of %s from inputs shapes: %s\n",
+               op.name.c_str(), sig.c_str());
         auto out_shape = op.infer(&shape_list);
-        printf("[infer_shape] %s : %s -> %s\n", op.name.c_str(), sig.c_str(),
-               std::to_string(*out_shape).c_str());
+        printf("[D] -> %s\n", std::to_string(*out_shape).c_str());
         return *std::unique_ptr<shape_t>(out_shape);
     }
 

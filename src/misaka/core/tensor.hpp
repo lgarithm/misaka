@@ -6,14 +6,12 @@
 #include <memory>
 #include <numeric>
 #include <string>
+#include <vector>
 
 #include <misaka.h>
 #include <misaka/core/debug.hpp> // for LOG_TENSOR_USAGE
 #include <misaka/core/idx.hpp>
 #include <misaka/core/shape.hpp> // for shape_t
-
-struct tensor_t;
-struct tensor_ref_t;
 
 struct tensor_t {
     const shape_t shape;
@@ -31,8 +29,6 @@ struct tensor_t {
     }
 
     // TODO: support initializers
-
-    tensor_ref_t operator[](uint32_t idx) const;
 };
 
 struct tensor_ref_t {
@@ -48,6 +44,18 @@ struct tensor_ref_t {
     explicit tensor_ref_t(const tensor_t &tensor)
         : shape(tensor.shape), dtype(tensor.dtype), data(tensor.data)
     {
+    }
+
+    tensor_ref_t operator[](uint32_t idx) const
+    {
+        assert(idx < shape.len());
+        if (shape.rank() == 0) {
+            return *this;
+        }
+        shape_t new_shape(
+            std::vector<uint32_t>(shape.dims.begin() + 1, shape.dims.end()));
+        uint32_t offset = idx * new_shape.dim() * dtype_size(dtype);
+        return tensor_ref_t(new_shape, dtype, (uint8_t *)(data) + offset);
     }
 };
 

@@ -17,7 +17,7 @@ const constant_initializer<T> default_bias_init(0.1);
 
 struct fc_layer_t : layer_t {
     const uint32_t n;
-    fc_layer_t(uint32_t n) : n(n) {}
+    explicit fc_layer_t(uint32_t n) : n(n) {}
 
     node_t *operator()(model_ctx_t &ctx, node_t *x) const override
     {
@@ -45,21 +45,30 @@ struct conv_layer_t : layer_t {
     conv_layer_t(uint32_t r, uint32_t s, uint32_t d = 1) : r(r), s(s), d(d) {}
     node_t *operator()(model_ctx_t &ctx, node_t *x) const override
     {
+        const auto input_rank = x->shape.rank();
         auto c = [&]() {
-            assert(x->shape.rank() == 3);
-            const auto[h, w, c] = cast<3>(x->shape.dims);
-            x = ctx.wrap(shape_t(1, h, w, c), *x);
+            if (input_rank == 3) {
+                const auto[h, w, c] = cast<3>(x->shape.dims);
+                x = ctx.wrap(shape_t(1, h, w, c), *x);
+            }
+            assert(x->shape.rank() == 4);
+            const auto[n, h, w, c] = cast<4>(x->shape.dims);
             return c;
         }();
-        auto w = ctx.make_parameter(shape_t(r, s, c, d));
-        default_weight_init(r_tensor_ref_t<T>(w->value()));
-        node_t *args1[] = {x, w};
+        auto weight = ctx.make_parameter(shape_t(r, s, c, d));
+        default_weight_init(r_tensor_ref_t<T>(weight->value()));
+        node_t *args1[] = {x, weight};
         auto y = ctx.make_operator(*op_conv_nhwc, args1);
-        {
-            const auto[_1, h, w, c] = cast<4>(y->shape.dims);
-            y = ctx.wrap(shape_t(h, w, c), *y);
+        const auto[n, u, v, d] = cast<4>(y->shape.dims);
+        y = ctx.wrap(shape_t(n * u * v, d), *y);
+        auto bias = ctx.make_parameter(shape_t(d));
+        node_t *args2[] = {y, bias};
+        y = ctx.make_operator(*op_add, args2);
+        if (input_rank == 3) {
+            y = ctx.wrap(shape_t(u, v, d), *y);
+        } else {
+            y = ctx.wrap(shape_t(n, u, v, d), *y);
         }
-        // TODO: add bias
         return y;
     }
 };
@@ -99,7 +108,7 @@ struct chain_layer_t : layer_t {
     std::vector<layer_t *> layers;
 
     template <typename... T>
-    chain_layer_t(T... l) : layers({static_cast<layer_t *>(l)...})
+    explicit chain_layer_t(T... l) : layers({static_cast<layer_t *>(l)...})
     {
     }
 

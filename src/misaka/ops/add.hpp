@@ -4,14 +4,16 @@
 #include <misaka/core/shape.hpp>
 #include <misaka/linag/linag.hpp>
 #include <misaka/model/operator.hpp>
+#include <misaka/ops/batch.hpp>
 
-struct add {
+// [n], [n] -> [n]
+struct add_vv {
     constexpr static uint8_t arity = 2;
 
-    static shape_t *infer(const shape_list_t *shape_list)
+    static shape_t *infer(const shape_list_t *shapes)
     {
-        assert(shape_list->shapes.size() == arity);
-        return new shape_t((*shape_list)[0]);
+        assert(shapes->size() == arity);
+        return new shape_t((*shapes)[0]);
     }
 
     using T = float; // TODO: cast based on dtype
@@ -19,7 +21,6 @@ struct add {
     struct forward : forward_ctx_t {
         void operator()() const
         {
-            assert(inputs.arity() == arity);
             linag<T>::vv(as_vector_ref<T>(inputs[0]),
                          as_vector_ref<T>(inputs[1]), as_vector_ref<T>(output));
         }
@@ -31,6 +32,48 @@ struct add {
             auto g = r_tensor_ref_t<T>(output_gradient);
             r_tensor_ref_t<T>(input_gradients[0]).copy(g);
             r_tensor_ref_t<T>(input_gradients[1]).copy(g);
+        }
+    };
+};
+
+struct add {
+    constexpr static uint8_t arity = 2;
+    using add_mv = batch<add_vv, 0>;
+
+    static shape_t *infer(const shape_list_t *shape_list)
+    {
+        assert(shape_list->shapes.size() == arity);
+        const auto[p, q] = cast<2>(shape_list->shapes);
+        if (p.rank() > q.rank()) {
+            return add_mv::infer(shape_list);
+        }
+        assert(p.rank() == q.rank());
+        return add_vv::infer(shape_list);
+    }
+
+    struct forward : forward_ctx_t {
+        void operator()() const
+        {
+            const auto[x, y] = cast<2>(inputs._args);
+            if (x.shape.rank() > y.shape.rank()) {
+                (*(add_mv::forward *)this)();
+            } else {
+                assert(x.shape.rank() == y.shape.rank());
+                (*(add_vv::forward *)this)();
+            }
+        }
+    };
+
+    struct backward : backward_ctx_t {
+        void operator()() const
+        {
+            const auto[x, y] = cast<2>(inputs._args);
+            if (x.shape.rank() > y.shape.rank()) {
+                (*(add_mv::backward *)this)();
+            } else {
+                assert(x.shape.rank() == y.shape.rank());
+                (*(add_vv::backward *)this)();
+            }
         }
     };
 };
