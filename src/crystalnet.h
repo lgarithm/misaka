@@ -78,6 +78,7 @@ extern operator_t *op_pool2d_c_max;
 
 // symbolic APIs
 typedef struct s_node_t s_node_t;
+typedef s_node_t *symbol;
 typedef struct s_model_t s_model_t;
 typedef struct s_model_ctx_t s_model_ctx_t;
 s_model_ctx_t *new_s_model_ctx();
