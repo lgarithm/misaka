@@ -31,7 +31,7 @@ struct trainer_t {
           loss(make_loss(model, label, loss_func)),
           optimize(optimizer->optimize(model))
     {
-        printf("[D] %lu hyper parameters\n", model->ctx->params.size());
+        printf("[D] %lu hyper parameters\n", model->ctx->params.items.size());
     }
 
     void debug(const char *name)
