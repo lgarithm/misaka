@@ -76,6 +76,19 @@ extern operator_t *op_pool2d_c_max;
 // extern layer_t *layer_fc;
 // extern layer_t *layer_covn;
 
+// symbolic APIs
+typedef struct s_node_t s_node_t;
+typedef struct s_model_t s_model_t;
+typedef struct s_model_ctx_t s_model_ctx_t;
+s_model_ctx_t *new_s_model_ctx();
+s_model_t *new_s_model(s_model_ctx_t *, s_node_t *, s_node_t *);
+void free_s_model(s_model_t *);
+s_node_t *var(s_model_ctx_t *, const shape_t *);
+s_node_t *covar(s_model_ctx_t *, const shape_t *);
+s_node_t *reshape(s_model_ctx_t *, const shape_t *, const s_node_t *);
+s_node_t *apply(s_model_ctx_t *, const operator_t *, s_node_t *args[]);
+model_t *realize(const s_model_t *);
+
 // training
 typedef struct dataset_t dataset_t;
 typedef struct trainer_t trainer_t;

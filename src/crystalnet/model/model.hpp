@@ -26,6 +26,7 @@ struct model_ctx_t {
     GC<node_t> gc;
     std::vector<operator_node_t *> ops;
     std::vector<parameter_node_t *> params;
+    Ref<placeholder_node_t> places;
 
     node_t *make_parameter(const shape_t &shape, std::string name = "")
     {
@@ -42,7 +43,7 @@ struct model_ctx_t {
         if (name.empty()) {
             name = place_name();
         }
-        return gc(new placeholder_node_t(shape, name));
+        return gc(places(new placeholder_node_t(shape, name)));
     }
 
     node_t *make_operator(const operator_t &op, node_t *nodes[],
