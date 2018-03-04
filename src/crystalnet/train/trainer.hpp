@@ -92,11 +92,16 @@ struct trainer_t {
         return std::make_pair(yes, yes + no);
     }
 
-    static constexpr uint32_t default_batch_size = 500;
+    static constexpr uint32_t default_batch_size = 9999;
 
     void run_batch(dataset_t &ds)
     {
         DEBUG(__func__);
-        // TODO
+        for (auto[step, data] : enumerate(batch(ds, default_batch_size))) {
+            auto[images, label_s] = data;
+            printf("%s\n", std::to_string(images).c_str());
+            printf("%s\n", std::to_string(label_s).c_str());
+            // TODO: implement
+        }
     }
 };

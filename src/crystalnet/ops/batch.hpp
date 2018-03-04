@@ -32,13 +32,6 @@ backward_ctx_t unbatch(uint8_t pos, uint8_t idx, const backward_ctx_t &ctx)
 template <typename O, uint8_t pos> struct batch {
     constexpr static uint8_t arity = O::arity;
 
-    static shape_t n_batch(uint32_t n, const shape_t &shape)
-    {
-        std::vector<uint32_t> dims({n});
-        dims.insert(dims.end(), shape.dims.begin(), shape.dims.end());
-        return shape_t(dims);
-    }
-
     static shape_t *infer(const shape_list_t *shapes)
     {
         static_assert(pos < arity);
@@ -49,7 +42,7 @@ template <typename O, uint8_t pos> struct batch {
             change_ith(pos, shapes->shapes, batched_shape.sub());
         const auto out_shape = std::unique_ptr<shape_t>(
             O::infer(std::make_unique<shape_list_t>(new_shapes).get()));
-        return new shape_t(n_batch(batched_shape.len(), *out_shape));
+        return new shape_t(out_shape->batch(batched_shape.len()));
     }
 
     using T = float; // TODO: cast based on dtype

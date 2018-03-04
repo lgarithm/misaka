@@ -52,10 +52,17 @@ struct tensor_ref_t {
         if (shape.rank() == 0) {
             return *this;
         }
-        shape_t new_shape(
-            std::vector<uint32_t>(shape.dims.begin() + 1, shape.dims.end()));
-        uint32_t offset = idx * new_shape.dim() * dtype_size(dtype);
+        const auto new_shape = shape.sub();
+        const uint32_t offset = idx * new_shape.dim() * dtype_size(dtype);
         return tensor_ref_t(new_shape, dtype, (uint8_t *)(data) + offset);
+    }
+
+    tensor_ref_t slice(uint32_t i, uint32_t j) const
+    {
+        const auto sub_shape = shape.sub();
+        const uint32_t offset = i * sub_shape.dim() * dtype_size(dtype);
+        return tensor_ref_t(sub_shape.batch(j - i), dtype,
+                            (uint8_t *)(data) + offset);
     }
 };
 
