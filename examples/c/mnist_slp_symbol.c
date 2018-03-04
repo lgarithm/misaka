@@ -5,15 +5,13 @@
 // y = softmax(flatten(x) * w + b)
 s_model_t *slp(shape_t *image_shape, uint8_t arity)
 {
-    shape_t *lable_shape = make_shape(1, arity);
-    shape_t *weight_shape = make_shape(2, shape_dim(image_shape), arity);
-    shape_t *x_wrap_shape = make_shape(1, shape_dim(image_shape));
-
+    shape_ctx_t *sc = make_shape_ctx();
     s_model_ctx_t *ctx = new_s_model_ctx();
+
     symbol x = var(ctx, image_shape);
-    symbol x_ = reshape(ctx, x_wrap_shape, x);
-    symbol w = covar(ctx, weight_shape);
-    symbol b = covar(ctx, lable_shape);
+    symbol x_ = reshape(ctx, mk_shape(sc, 1, shape_dim(image_shape)), x);
+    symbol w = covar(ctx, mk_shape(sc, 2, shape_dim(image_shape), arity));
+    symbol b = covar(ctx, mk_shape(sc, 1, arity));
 
     symbol args1[] = {x_, w};
     symbol op1 = apply(ctx, op_mul, args1);
@@ -22,9 +20,7 @@ s_model_t *slp(shape_t *image_shape, uint8_t arity)
     symbol args3[] = {op2};
     symbol op3 = apply(ctx, op_softmax, args3);
 
-    free_shape(lable_shape);
-    free_shape(weight_shape);
-    free_shape(x_wrap_shape);
+    free_shape_ctx(sc);
     return new_s_model(ctx, x, op3);
 }
 
