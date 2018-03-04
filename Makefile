@@ -70,7 +70,7 @@ tidy:
 _tests:
 	make -C tests
 
-run_tests: libcrystalnet _tests
+test: libcrystalnet _tests
 	./utils/test.sh
 
 check: libcrystalnet _tests
