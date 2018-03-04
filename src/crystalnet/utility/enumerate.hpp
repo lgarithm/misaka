@@ -7,7 +7,7 @@
 template <typename T> struct enumerate_t {
     const T &e;
 
-    enumerate_t(const T &e) : e(e) {}
+    explicit enumerate_t(const T &e) : e(e) {}
 
     template <typename I> struct iter_t {
         uint32_t idx;

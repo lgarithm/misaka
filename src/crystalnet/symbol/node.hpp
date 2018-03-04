@@ -43,7 +43,7 @@ struct s_node_list_t {
 };
 
 struct s_parameter_node_t : s_node_t {
-    s_parameter_node_t(const shape_t &shape) : s_node_t(shape)
+    explicit s_parameter_node_t(const shape_t &shape) : s_node_t(shape)
     {
         log_new_s_node(shape, "covar");
     }
@@ -54,7 +54,7 @@ struct s_parameter_node_t : s_node_t {
 };
 
 struct s_placeholder_node_t : s_node_t {
-    s_placeholder_node_t(const shape_t &shape) : s_node_t(shape)
+    explicit s_placeholder_node_t(const shape_t &shape) : s_node_t(shape)
     {
         log_new_s_node(shape, "var");
     }
