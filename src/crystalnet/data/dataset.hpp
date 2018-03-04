@@ -20,12 +20,12 @@ struct dataset_t {
         explicit iter_t(const dataset_t &ds, uint32_t pos) : ds(ds), pos(pos) {}
         bool operator!=(const iter_t &it) const { return pos != it.pos; }
         void operator++() { ++pos; }
-        item_t operator*() { return ds.slice(pos); }
+        item_t operator*() const { return ds.slice(pos); }
     };
 
-    iter_t begin() { return iter_t(*this, 0); }
+    iter_t begin() const { return iter_t(*this, 0); }
 
-    iter_t end() { return iter_t(*this, len()); }
+    iter_t end() const { return iter_t(*this, len()); }
 };
 
 struct simple_dataset_t : dataset_t {
