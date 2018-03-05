@@ -13,12 +13,9 @@ s_model_t *slp(shape_t *image_shape, uint8_t arity)
     symbol w = covar(ctx, mk_shape(sc, 2, shape_dim(image_shape), arity));
     symbol b = covar(ctx, mk_shape(sc, 1, arity));
 
-    symbol args1[] = {x_, w};
-    symbol op1 = apply(ctx, op_mul, args1);
-    symbol args2[] = {op1, b};
-    symbol op2 = apply(ctx, op_add, args2);
-    symbol args3[] = {op2};
-    symbol op3 = apply(ctx, op_softmax, args3);
+    symbol op1 = apply(ctx, op_mul, (symbol[]){x_, w});
+    symbol op2 = apply(ctx, op_add, (symbol[]){op1, b});
+    symbol op3 = apply(ctx, op_softmax, (symbol[]){op2});
 
     free_shape_ctx(sc);
     return new_s_model(ctx, x, op3);
