@@ -40,10 +40,13 @@ s_model_t *new_s_model(s_model_ctx_t *ctx, s_node_t *input, s_node_t *output)
 
 void free_s_model(s_model_t *model) { delete model; }
 
-model_t *realize(const s_model_t *m)
+model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
+                 uint32_t batch_size)
 {
-    model_ctx_t *ctx = new_model_ctx();
-    auto output = m->output->realize(*ctx);
+    printf("[D] realise:\n");
+    model_option_t opt(m->input, batch_size);
+    model_ctx_t *ctx = new model_ctx_t(p_ctx);
+    auto output = m->output->realize(*ctx, opt);
     auto places = ctx->places.items;
     if (places.size() != 1) {
         // TODO: support any number of placeholders
