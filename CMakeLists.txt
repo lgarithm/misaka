@@ -16,7 +16,7 @@ endif()
 include_directories(${CMAKE_SOURCE_DIR}/src)
 link_directories(${LIBRARY_OUTPUT_PATH})
 
-file(GLOB srcs src/crystalnet/**/*.cpp src/teavana/*.cpp)
+file(GLOB srcs src/crystalnet/**/*.cpp)
 add_library(crystalnet SHARED ${srcs})
 if (USE_OPENBLAS)
     target_link_libraries(crystalnet openblas)
