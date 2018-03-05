@@ -80,7 +80,7 @@ struct s_trainer_t {
                 auto q = argmax<T>(as_vector_ref<T>(m->output->value()[i]));
                 p == q ? ++yes : ++no;
             }
-            printf("test step: %d, %d/%d\n", step, yes, yes + no);
+            printf("test step: %u, %u/%u\n", step, yes, yes + no);
         }
         return std::make_pair(yes, yes + no);
     }

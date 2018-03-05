@@ -35,7 +35,7 @@ struct model_ctx_t {
     using key_t = void const *;
 
     model_ctx_t() : p_ctx(new parameter_ctx_t) {}
-    model_ctx_t(parameter_ctx_t *p_ctx) : p_ctx(p_ctx) {}
+    explicit model_ctx_t(parameter_ctx_t *p_ctx) : p_ctx(p_ctx) {}
 
     node_t *make_parameter(const shape_t &shape, std::string name = "",
                            const key_t key = nullptr)

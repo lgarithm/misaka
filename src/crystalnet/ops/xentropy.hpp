@@ -1,7 +1,11 @@
 #pragma once
+#include <cmath>
+
 #include <crystalnet.h>
 #include <crystalnet/core/debug.hpp>
+#include <crystalnet/linag/base.hpp>
 #include <crystalnet/model/operator.hpp>
+#include <crystalnet/utility/range.hpp>
 
 struct xentropy_1d {
     constexpr static uint8_t arity = 2;
