@@ -73,7 +73,15 @@ struct tensor_ref_list_t {
     {
     }
     uint8_t arity() const { return _args.size(); }
-    tensor_ref_t operator[](uint8_t i) const { return _args[i]; }
+    tensor_ref_t operator[](uint32_t i) const { return _args[i]; }
+    shape_list_t shapes() const
+    {
+        std::vector<shape_t> shapes;
+        for (auto t : _args) {
+            shapes.push_back(t.shape);
+        }
+        return shape_list_t(shapes);
+    }
 };
 
 inline tensor_ref_t ref(const tensor_t &tensor) { return tensor_ref_t(tensor); }
@@ -102,6 +110,7 @@ template <typename R> struct r_tensor_ref_t {
         return std::accumulate(data, data + n, (R)0) / n;
     }
     void fill(R x) const { std::fill(data, data + shape.dim(), x); }
+    void fill_uni() const { fill(1.0 / shape.dim()); }
     void copy(const r_tensor_ref_t<R> &r)
     {
         const auto n = shape.dim();

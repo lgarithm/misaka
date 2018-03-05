@@ -30,16 +30,14 @@ int main()
     int height = 28;
     uint8_t n = 10;
     shape_t *image_shape = make_shape(2, width, height);
-    s_model_t *sm = slp(image_shape, n);
-    model_t *pm = realize(sm);
-    trainer_t *trainer = new_trainer(pm, op_xentropy, opt_sgd);
+    s_model_t *model = slp(image_shape, n);
+    s_trainer_t *trainer = new_s_trainer(model, op_xentropy, opt_sgd);
     dataset_t *ds1 = load_mnist("train");
     dataset_t *ds2 = load_mnist("t10k");
-    experiment(trainer, ds1, ds2);
+    s_experiment(trainer, ds1, ds2);
     free_dataset(ds1);
     free_dataset(ds2);
-    free_model(pm);
-    free_s_model(sm);
+    free_s_model(model);
     free_shape(image_shape);
     return 0;
 }
