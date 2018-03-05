@@ -14,13 +14,15 @@ auto change_ith(const uint8_t pos, const std::vector<T> &items,
     return new_items;
 }
 
-forward_ctx_t unbatch(uint8_t pos, uint32_t idx, const forward_ctx_t &ctx)
+inline forward_ctx_t unbatch(uint8_t pos, uint32_t idx,
+                             const forward_ctx_t &ctx)
 {
     const auto inputs = change_ith(pos, ctx.inputs._args, ctx.inputs[pos][idx]);
     return forward_ctx_t(tensor_ref_list_t(inputs), ctx.output[idx]);
 }
 
-backward_ctx_t unbatch(uint8_t pos, uint32_t idx, const backward_ctx_t &ctx)
+inline backward_ctx_t unbatch(uint8_t pos, uint32_t idx,
+                              const backward_ctx_t &ctx)
 {
     const auto inputs = change_ith(pos, ctx.inputs._args, ctx.inputs[pos][idx]);
     const auto input_gradients = change_ith(pos, ctx.input_gradients._args,

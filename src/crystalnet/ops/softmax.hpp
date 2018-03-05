@@ -109,5 +109,3 @@ struct softmax {
         }
     };
 };
-
-operator_t *op_softmax = _register_bi_op<softmax>("softmax");

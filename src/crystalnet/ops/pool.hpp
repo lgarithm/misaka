@@ -72,5 +72,3 @@ struct pool2d_c_max {
         }
     };
 };
-
-operator_t *op_pool2d_c_max = _register_bi_op<pool2d_c_max>("pool2d_c_max");

@@ -54,5 +54,3 @@ struct relu {
         }
     };
 };
-
-operator_t *op_relu = _register_bi_op<relu>("relu");

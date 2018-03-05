@@ -76,10 +76,6 @@ extern operator_t *op_xentropy;
 extern operator_t *op_conv_nhwc;
 extern operator_t *op_pool2d_c_max;
 
-// TODO: provide C bindings for layer API.
-// extern layer_t *layer_fc;
-// extern layer_t *layer_covn;
-
 // symbolic APIs
 typedef struct s_node_t s_node_t;
 typedef s_node_t *symbol;
@@ -92,6 +88,15 @@ s_node_t *var(s_model_ctx_t *, const shape_t *);
 s_node_t *covar(s_model_ctx_t *, const shape_t *);
 s_node_t *reshape(s_model_ctx_t *, const shape_t *, const s_node_t *);
 s_node_t *apply(s_model_ctx_t *, const operator_t *, s_node_t *args[]);
+
+// layer APIs
+typedef struct s_layer_t s_layer_t;
+typedef s_layer_t *(layer_func_t)(const shape_list_t *);
+extern layer_func_t *const new_layer_dense;
+extern layer_func_t *const new_layer_conv_nhwc;
+extern layer_func_t *const new_layer_pool_max;
+extern layer_func_t *const new_layer_relu;
+extern layer_func_t *const new_layer_softmax;
 
 // training
 typedef struct dataset_t dataset_t;
