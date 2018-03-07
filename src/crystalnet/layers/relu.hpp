@@ -4,8 +4,12 @@
 #include <crystalnet/ops/relu.hpp>
 
 template <> struct op_instance<relu> {
-    operator_t *get() { return op_relu; }
+    static operator_t *get() { return op_relu; }
 };
 
 struct relu_layer : unary_op_layer<relu> {
+    static s_layer_t *create(const shape_list_t *shape_list)
+    {
+        return new relu_layer();
+    }
 };

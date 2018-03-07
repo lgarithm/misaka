@@ -11,7 +11,7 @@
 #include <crystalnet/utility/range.hpp>
 
 struct s_trainer_t {
-    static constexpr uint32_t default_batch_size = 9999;
+    static constexpr const uint32_t default_batch_size = 9999;
 
     parameter_ctx_t p_ctx;
     const s_model_t *const model;
@@ -37,14 +37,15 @@ struct s_trainer_t {
     {
     }
 
-    void run(dataset_t &ds, dataset_t *test_ds = nullptr)
+    void run(dataset_t &ds, dataset_t *test_ds = nullptr,
+             const uint32_t batch_size = default_batch_size)
     {
-        const auto batch_size = default_batch_size;
         auto m = realize(&p_ctx, model, batch_size);
         auto label = make_label(m);
         auto loss = make_loss(m, label, loss_func);
         auto optimize = optimizer->optimize(m);
 
+        m->ctx->debug();
         printf("[D] training, batch size: %u\n", batch_size);
         for (auto[step, data] : enumerate(batch(ds, batch_size))) {
             printf("[D] begin step %u\n", step);

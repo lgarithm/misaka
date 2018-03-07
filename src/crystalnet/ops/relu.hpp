@@ -15,8 +15,8 @@ struct relu {
 
     static shape_t *infer(const shape_list_t *shape_list)
     {
-        assert(shape_list->shapes.size() == arity);
-        return new shape_t((*shape_list)[0]);
+        const auto[p] = cast<arity>(shape_list->shapes);
+        return new shape_t(p);
     }
 
     using T = float; // TODO: cast based on dtype
@@ -26,7 +26,6 @@ struct relu {
     struct forward : forward_ctx_t {
         void operator()() const
         {
-            DEBUG(__FILE__);
             auto x = cast_to_v<T>(inputs[0]);
             auto y = cast_to_v<T>(output);
             auto n = equally(x.n, y.n);

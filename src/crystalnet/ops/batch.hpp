@@ -38,9 +38,9 @@ template <typename O, uint8_t pos> struct batch {
     static shape_t *infer(const shape_list_t *shapes)
     {
         static_assert(pos < arity);
-        assert(shapes->size() == arity);
+        check(shapes->size() == arity);
         const auto batched_shape = (*shapes)[pos];
-        assert(batched_shape.rank() > 1);
+        check(batched_shape.rank() > 1);
         const auto new_shapes =
             change_ith(pos, shapes->shapes, batched_shape.sub());
         const auto out_shape = std::unique_ptr<shape_t>(

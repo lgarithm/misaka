@@ -51,7 +51,7 @@ model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
     if (places.size() != 1) {
         // TODO: support any number of placeholders
         printf("exact one placeholder must be specified!\n");
-        assert(false);
+        check(false);
     }
     auto inputs = places[0];
     return new_model(ctx, inputs, output);

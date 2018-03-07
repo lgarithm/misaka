@@ -13,5 +13,3 @@ struct pool : unary_op_layer<pool2d_c_max> {
         return new pool;
     }
 };
-
-const auto new_layer_pool_max = pool::create;

@@ -1,11 +1,11 @@
 #pragma once
-#include <cassert>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include <crystalnet.h>
 #include <crystalnet/core/debug.hpp>
+#include <crystalnet/core/error.hpp>
 #include <crystalnet/core/shape.hpp>
 #include <crystalnet/core/tensor.hpp>
 #include <crystalnet/linag/base.hpp>
@@ -22,7 +22,7 @@ struct node_t {
     node_t(const shape_t &shape, const char *pname = nullptr)
         : name(create_name(pname)), shape(shape), dtype(default_dtype)
     {
-        // LOG_NODE_USAGE(shape, name);
+        LOG_NODE_USAGE(shape, name);
     }
 
     virtual ~node_t() {}
@@ -30,7 +30,7 @@ struct node_t {
     virtual void bind(const tensor_ref_t &)
     {
         // TODO: move it to placeholder
-        assert(false);
+        check(false);
     }
 
     virtual tensor_ref_t value() const = 0;
@@ -75,7 +75,7 @@ struct placeholder_node_t : node_t {
 
     void bind(const tensor_ref_t &r) override
     {
-        assert(r.dtype == dtype);
+        check(r.dtype == dtype);
         _value.reset(new tensor_ref_t(r));
     }
 
@@ -182,7 +182,10 @@ struct wrap_node_t : node_t {
     wrap_node_t(const shape_t &shape, const node_t &node)
         : node_t(shape, "wrap"), wrapped(node)
     {
-        assert(shape.dim() == node.shape.dim());
+        printf("wrap_node_t::wrap_node_t %s <- %s\n",
+               std::to_string(shape).c_str(),
+               std::to_string(node.shape).c_str());
+        check(shape.dim() == node.shape.dim());
     }
 
     tensor_ref_t value() const override
