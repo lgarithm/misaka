@@ -3,7 +3,11 @@
 
 #include <crystalnet.h>
 #include <crystalnet/core/debug.hpp>
+#include <crystalnet/linag/base.hpp>
+#include <crystalnet/linag/linag.hpp>
 #include <crystalnet/model/operator.hpp>
+#include <crystalnet/ops/batch.hpp>
+#include <crystalnet/utility/cast.hpp>
 #include <crystalnet/utility/range.hpp>
 
 template <typename T>
@@ -35,12 +39,12 @@ void softmax_grad(const vector_ref_t<T> &output, const matrix_ref_t<T> &grad)
     }
 }
 
-struct softmax {
+struct softmax_1d {
     constexpr static uint8_t arity = 1;
 
     static shape_t *infer(const shape_list_t *shape_list)
     {
-        assert(shape_list->shapes.size() == arity);
+        check(shape_list->shapes.size() == arity);
         return new shape_t((*shape_list)[0]);
     }
 
@@ -49,7 +53,7 @@ struct softmax {
     struct forward : forward_ctx_t {
         void operator()() const
         {
-            assert(inputs.arity() == arity);
+            check(inputs.arity() == arity);
             softmax_eval_safe(as_vector_ref<T>(inputs[0]),
                               as_vector_ref<T>(output));
         }
@@ -68,4 +72,41 @@ struct softmax {
     };
 };
 
-operator_t *op_softmax = _register_bi_op<softmax>("softmax");
+struct softmax {
+    constexpr static uint8_t arity = 1;
+    using softmax_2d = batch<softmax_1d, 0>;
+
+    static shape_t *infer(const shape_list_t *shape_list)
+    {
+        check(shape_list->shapes.size() == arity);
+        return new shape_t((*shape_list)[0]);
+    }
+
+    using T = float;
+
+    struct forward : forward_ctx_t {
+        void operator()() const
+        {
+            const auto[p] = cast<1>(inputs.shapes().shapes);
+            if (p.rank() == 1) {
+                (*(softmax_1d::forward *)this)();
+            } else {
+                check(p.rank() == 2);
+                (*(softmax_2d::forward *)this)();
+            }
+        }
+    };
+
+    struct backward : backward_ctx_t {
+        void operator()() const
+        {
+            const auto[p] = cast<1>(inputs.shapes().shapes);
+            if (p.rank() == 1) {
+                (*(softmax_1d::backward *)this)();
+            } else {
+                check(p.rank() == 2);
+                (*(softmax_2d::backward *)this)();
+            }
+        }
+    };
+};
