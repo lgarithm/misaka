@@ -93,11 +93,11 @@ s_node_t *apply(s_model_ctx_t *, const operator_t *, s_node_t *args[]);
 // layer APIs
 typedef struct s_layer_t s_layer_t;
 typedef s_layer_t *(layer_func_t)(const shape_list_t *);
-extern layer_func_t *const new_layer_dense;
-extern layer_func_t *const new_layer_conv_nhwc;
-extern layer_func_t *const new_layer_pool_max;
-extern layer_func_t *const new_layer_relu;
-extern layer_func_t *const new_layer_softmax;
+extern const layer_func_t *const new_layer_dense;
+extern const layer_func_t *const new_layer_conv_nhwc;
+extern const layer_func_t *const new_layer_pool_max;
+extern const layer_func_t *const new_layer_relu;
+extern const layer_func_t *const new_layer_softmax;
 s_node_t *transform(s_model_ctx_t *, const s_layer_t *, s_node_t *);
 
 // training
