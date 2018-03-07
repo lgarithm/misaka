@@ -2,6 +2,7 @@
 #include <crystalnet.h>
 #include <crystalnet/linag/linag.hpp>
 #include <crystalnet/model/operator.hpp>
+#include <crystalnet/utility/cast.hpp>
 #include <crystalnet/utility/range.hpp>
 
 template <typename T> vector_ref_t<T> cast_to_v(const tensor_ref_t &tensor)
