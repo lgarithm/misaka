@@ -58,7 +58,7 @@ struct s_trainer_t {
             loss->backward();
             (*optimize)();
             m->ctx->debug();
-            printf("train step: %d\n", step);
+            printf("train step: %u\n", step);
             if (test_ds) {
                 const auto[yes, tot] = test(*test_ds);
                 printf("test acc: %g\n", yes / (float)tot);
