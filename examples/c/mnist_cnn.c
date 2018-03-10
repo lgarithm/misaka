@@ -23,22 +23,25 @@ s_model_t *cnn(shape_t *image_shape, uint8_t arity)
     shape_ctx_t *sc = make_shape_ctx();
     s_model_ctx_t *ctx = new_s_model_ctx();
 
-    s_layer_t *c1 = new_layer_conv_nhwc(make_shape_list((p_shape_t[]){
-        mk_shape(sc, 3, 5, 5, 32),
-        NULL,
-    }));
-    s_layer_t *c2 = new_layer_conv_nhwc(make_shape_list((p_shape_t[]){
-        mk_shape(sc, 3, 5, 5, 64),
-        NULL,
-    }));
-    s_layer_t *f1 = new_layer_dense(make_shape_list((p_shape_t[]){
-        mk_shape(sc, 1, 1024),
-        NULL,
-    }));
-    s_layer_t *f2 = new_layer_dense(make_shape_list((p_shape_t[]){
-        mk_shape(sc, 1, arity),
-        NULL,
-    }));
+    s_layer_t *c1 =
+        new_layer_conv_nhwc(mk_shape_list(sc, (p_shape_t[]){
+                                                  mk_shape(sc, 3, 5, 5, 32),
+                                                  NULL,
+                                              }));
+    s_layer_t *c2 =
+        new_layer_conv_nhwc(mk_shape_list(sc, (p_shape_t[]){
+                                                  mk_shape(sc, 3, 5, 5, 64),
+                                                  NULL,
+                                              }));
+    s_layer_t *f1 = new_layer_dense(mk_shape_list(sc, (p_shape_t[]){
+                                                          mk_shape(sc, 1, 1024),
+                                                          NULL,
+                                                      }));
+    s_layer_t *f2 =
+        new_layer_dense(mk_shape_list(sc, (p_shape_t[]){
+                                              mk_shape(sc, 1, arity),
+                                              NULL,
+                                          }));
     s_layer_t *pool = new_layer_pool_max(NULL); //
     s_layer_t *act = new_layer_relu(NULL);      //
     s_layer_t *out = new_layer_softmax(NULL);
@@ -62,6 +65,13 @@ s_model_t *cnn(shape_t *image_shape, uint8_t arity)
                              },
                              x_);
     free_shape_ctx(sc);
+    free_s_layer(c1);
+    free_s_layer(c2);
+    free_s_layer(f1);
+    free_s_layer(f2);
+    free_s_layer(pool);
+    free_s_layer(act);
+    free_s_layer(out);
     printf("[y] creating model\n");
     return new_s_model(ctx, x, y);
 }
@@ -80,6 +90,7 @@ int main()
     free_dataset(ds1);
     free_dataset(ds2);
     free_s_model(model);
+    free_s_trainer(trainer);
     free_shape(image_shape);
     return 0;
 }
