@@ -68,15 +68,12 @@ struct initializer_t {
 };
 
 struct simple_shape_func_t : shape_func_t {
-    typedef shape_t *(shape_func_ptr_t)(const shape_list_t *);
-    shape_func_ptr_t *fn_ptr;
-    simple_shape_func_t(shape_func_ptr_t *fn_ptr) : fn_ptr(fn_ptr) {}
+    typedef shape_t(shape_fn_t)(const shape_list_t &);
+    shape_fn_t *fn;
+    explicit simple_shape_func_t(shape_fn_t *fn) : fn(fn) {}
     shape_t operator()(const shape_list_t &shape_list) override
     {
-        shape_t *p_shape = fn_ptr(&shape_list);
-        shape_t shape(*p_shape);
-        free_shape(p_shape);
-        return shape;
+        return fn(shape_list);
     }
 };
 
@@ -102,8 +99,7 @@ template <typename T> struct simple_backward_func_t : backward_func_t {
 
 template <typename T> operator_t *_register_bi_op(const char *const name)
 {
-    shape_func_t *infer = new simple_shape_func_t(T::infer);
-    forward_func_t *eval = new simple_forward_func_t<T>;
-    backward_func_t *feed = new simple_backward_func_t<T>;
-    return register_op(name, T::arity, infer, eval, feed);
+    return register_op(name, T::arity, new simple_shape_func_t(T::infer),
+                       new simple_forward_func_t<T>,
+                       new simple_backward_func_t<T>);
 }
