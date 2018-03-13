@@ -77,13 +77,14 @@ struct simple_shape_func_t : shape_func_t {
     }
 };
 
-template <typename T, typename S> void call(S &ctx)
+template <typename T, typename S> void call(const S &ctx)
 {
     static_assert(std::is_base_of<S, T>::value);
     (*(T *)&ctx)();
 }
 
-template <typename T, typename S, typename P> void call(S &ctx, const P &p)
+template <typename T, typename S, typename P>
+void call(const S &ctx, const P &p)
 {
     static_assert(std::is_base_of<S, T>::value);
     (*(T *)&ctx)(p);
