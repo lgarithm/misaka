@@ -77,6 +77,8 @@ extern operator_t *op_xentropy;
 // unstable operators:
 extern operator_t *op_conv_nhwc;
 extern operator_t *op_pool2d_c_max;
+extern operator_t *make_op_pool2d(uint32_t, uint32_t, uint32_t, uint32_t);
+extern operator_t *make_op_conv2d(uint32_t, uint32_t, uint32_t, uint32_t);
 
 // symbolic APIs
 typedef struct s_node_t s_node_t;
@@ -134,6 +136,11 @@ dataset_t *load_cifar();
 tensor_t *_load_idx_file(const char *filename);
 void experiment(trainer_t *, dataset_t *, dataset_t *);
 void s_experiment(s_trainer_t *, dataset_t *, dataset_t *, uint32_t);
+
+// eager APIs
+shape_t *infer(const operator_t *, const shape_list_t *);
+void eval(const operator_t *, const forward_ctx_t *);
+void grad(const operator_t *, const backward_ctx_t *);
 
 #ifdef __cplusplus
 }
