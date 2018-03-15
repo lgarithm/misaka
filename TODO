@@ -13,6 +13,7 @@
 * implement adam optimizer (done)
 * remove teavana dependency (done)
 * mini batch (done)
+* fix python binding crash on mac (done)
 * add configure
 * add C++ binding
 * add Haskell binding
@@ -20,5 +21,4 @@
 * run iwyu
 * add namespace
 * run find in Makefile
-* fix python binding crash on mac
 * tests for operators
