@@ -12,11 +12,10 @@
 * load cifar (done)
 * implement adam optimizer (done)
 * remove teavana dependency (done)
-* mini batch
+* mini batch (done)
 * add configure
 * add C++ binding
 * add Haskell binding
-* reverse test binary name
 * run clang-tidy
 * run iwyu
 * add namespace

@@ -134,7 +134,7 @@ template <typename R, uint8_t r> struct ranked_tensor_ref_t {
         : shape(shape), data(data)
     {
     }
-
+    void fill(R x) const { std::fill(data, data + shape.dim(), x); }
     template <typename... I> R &at(I... i) const
     {
         return data[shape.idx(i...)];

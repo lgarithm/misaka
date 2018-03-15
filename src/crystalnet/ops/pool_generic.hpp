@@ -41,7 +41,7 @@ struct pool2d_c {
     static shape_t infer(const shape_list_t &shape_list,
                          const trait_t &t = trait_t())
     {
-        const auto[p] = cast<1>(shape_list.shapes);
+        const auto[p] = cast<arity>(shape_list.shapes);
         const auto[n, h, w, c] = cast<4>(p.dims);
         const auto h_ = output_size(h, t.filter.dims[0], t.stride.dims[0]);
         const auto w_ = output_size(w, t.filter.dims[1], t.stride.dims[1]);
@@ -119,7 +119,7 @@ struct op_pool2d_impl_t {
     constexpr static uint8_t arity = 1;
     const pool2d_c::trait_t t;
 
-    op_pool2d_impl_t(const pool2d_c::trait_t &t) : t(t) {}
+    explicit op_pool2d_impl_t(const pool2d_c::trait_t &t) : t(t) {}
 
     shape_t infer(const shape_list_t &shape_list) const
     {

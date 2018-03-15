@@ -137,3 +137,12 @@ template <typename T> struct generic_backward_func_t : backward_func_t {
 
     void operator()(const backward_ctx_t &ctx) override { op.backward(ctx); }
 };
+
+template <typename T>
+operator_t *_register_generic_bi_op(const char *const name, const T *op)
+{
+    return register_op(name, T::arity, //
+                       new generic_shape_func_t<T>(*op),
+                       new generic_forward_func_t<T>(*op),
+                       new generic_backward_func_t<T>(*op));
+}
