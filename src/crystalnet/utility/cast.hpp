@@ -4,6 +4,8 @@
 #include <utility>
 #include <vector>
 
+#include <crystalnet/core/error.hpp>
+
 template <typename T, size_t... i>
 auto _index(const std::vector<T> &v, std::index_sequence<i...>)
 {

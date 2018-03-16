@@ -99,42 +99,13 @@ int main()
     s_model_info(model);
     s_trainer_t *trainer = new_s_trainer(model, op_xentropy, opt_adam);
     dataset_t *ds1 = fake_imagenet();
-    dataset_t *ds2 = fake_imagenet();
+    // dataset_t *ds2 = fake_imagenet();
     const uint32_t batch_size = 2;
-    s_experiment(trainer, ds1, ds2, batch_size);
+    s_experiment(trainer, ds1, NULL, batch_size);
     free_dataset(ds1);
-    free_dataset(ds2);
+    // free_dataset(ds2);
     free_s_trainer(trainer);
     free_s_model(model);
     free_shape(image_shape);
     return 0;
 }
-
-/*
-    224, 11, 4, -> 55
-    (224 - 11) / 4 = 213 / 4 = 53
-
-    (55 * 4) = 220
-    223
-
-    (11 - 3) / 2 + 1
-    01234567890
-    ___34567890
-      ___567890
-        ___7890
-          ___90
-            ___
-
-    (x - 11) / 4 + 1 = 55
-    x = (55 - 1) * 4 + 11 = 54 * 4 + 11 = 216 + 11 = 227
-
-
-    (55 - 3) / 2 + 1 = 27
-
-    (27 + 2 * 2 - 5) + 1 = 25
-
-    (25 - 3) / 2 + 1 = 12,     (13 - 1) * 2 + 3 = 27
-
-
-
-*/
