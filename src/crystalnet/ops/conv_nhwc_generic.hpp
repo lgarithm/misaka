@@ -60,9 +60,9 @@ struct conv_nhwc_generic {
     static shape_t infer(const shape_list_t &shape_list,
                          const trait_t &t = trait_t())
     {
-        const auto[p, q] = cast<arity>(shape_list.shapes);
-        const auto[n, h, w, c] = cast<4>(p.dims);
-        const auto[r, s, _c, d] = cast<4>(q.dims);
+        const auto[p, q] = cast<arity>(shape_list.shapes, auto_hint);
+        const auto[n, h, w, c] = cast<4>(p.dims, auto_hint);
+        const auto[r, s, _c, d] = cast<4>(q.dims, auto_hint);
         check(c == _c);
 
         const auto[pad_h, pad_w] = t.padding.dims;

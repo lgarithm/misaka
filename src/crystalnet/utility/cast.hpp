@@ -16,3 +16,10 @@ template <uint8_t rank, typename T> auto cast(const std::vector<T> &v)
     check(v.size() == rank);
     return _index(v, std::make_index_sequence<rank>());
 }
+
+template <uint8_t rank, typename T>
+auto cast(const std::vector<T> &v, const hint_t &hint)
+{
+    check_with_hint(v.size() == rank, hint);
+    return _index(v, std::make_index_sequence<rank>());
+}
