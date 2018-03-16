@@ -17,7 +17,7 @@ struct pool2d_c {
 
         trait_t() : filter(r_shape(2, 2)), stride(filter) {}
 
-        trait_t(const ranked_shape_t<2> &filter)
+        explicit trait_t(const ranked_shape_t<2> &filter)
             : filter(filter), stride(filter)
         {
         }

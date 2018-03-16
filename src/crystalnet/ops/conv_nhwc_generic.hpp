@@ -33,7 +33,7 @@ struct conv_nhwc_generic {
 
         trait_t() : padding(r_shape(0, 0)), stride(r_shape(1, 1)) {}
 
-        trait_t(const ranked_shape_t<2> &padding)
+        explicit trait_t(const ranked_shape_t<2> &padding)
             : padding(padding), stride(r_shape(0, 0))
         {
         }

@@ -8,7 +8,7 @@
 
 struct pool2d_layer : s_layer_t {
     const operator_t *op;
-    pool2d_layer(const operator_t *op) : op(op) {}
+    explicit pool2d_layer(const operator_t *op) : op(op) {}
 
     s_node_t *operator()(s_model_ctx_t &ctx, s_node_t *x) const override
     {
