@@ -22,3 +22,4 @@
 * add namespace
 * run find in Makefile
 * tests for operators
+* fix auto batch when batch_size = 1

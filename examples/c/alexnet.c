@@ -80,29 +80,30 @@ s_model_t *alexnet(shape_t *image_shape, uint32_t arity)
     return new_s_model(ctx, x, y);
 }
 
+const uint32_t height = 227;
+const uint32_t width = 227;
+const uint32_t class_number = 1000;
+
 dataset_t *fake_imagenet()
 {
-    shape_ctx_t *sc = make_shape_ctx();
-    // tensor_t *images = make_tensor();
-    // tensor_t *labels = make_tensor();
-    free_shape_ctx(sc);
-    return NULL;
+    shape_t *image_shape = make_shape(3, height, width, 3);
+    dataset_t *p_ds = new_fake_dataset(image_shape, class_number);
+    free_shape(image_shape);
+    return p_ds;
 }
 
 int main()
 {
-    const uint32_t height = 227;
-    const uint32_t width = 227;
-    const uint32_t k = 1000;
     shape_t *image_shape = make_shape(3, height, width, 3);
-    s_model_t *model = alexnet(image_shape, k);
+    s_model_t *model = alexnet(image_shape, class_number);
+    s_model_info(model);
     s_trainer_t *trainer = new_s_trainer(model, op_xentropy, opt_adam);
-    // dataset_t *ds1 = fake_imagenet();
-    // dataset_t *ds2 = fake_imagenet();
-    // const uint32_t batch_size = 4;
-    // s_experiment(trainer, ds1, ds2, batch_size);
-    // free_dataset(ds1);
-    // free_dataset(ds2);
+    dataset_t *ds1 = fake_imagenet();
+    dataset_t *ds2 = fake_imagenet();
+    const uint32_t batch_size = 2;
+    s_experiment(trainer, ds1, ds2, batch_size);
+    free_dataset(ds1);
+    free_dataset(ds2);
     free_s_trainer(trainer);
     free_s_model(model);
     free_shape(image_shape);

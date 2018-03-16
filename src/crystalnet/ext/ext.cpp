@@ -54,10 +54,11 @@ struct conv2d_layer : s_layer_t {
         const auto[r, s, d] = cast<3>(filter.shape.dims, auto_hint);
         const auto c = last_dim(x->shape);
 
-        const auto weight =
-            ctx.make_parameter(shape_t(r, s, c, d), weight_init);
+        const auto weight = ctx.make_parameter(shape_t(r, s, c, d), //
+                                               weight_init);
         auto y = ctx.make_operator(conv, x, weight);
-
+        const auto bias = ctx.make_parameter(shape_t(d), bias_init);
+        y = ctx.make_operator(*op_add, y, bias);
         return y;
     }
 };
