@@ -38,7 +38,7 @@ s_model_t *new_s_model(s_model_ctx_t *ctx, s_node_t *input, s_node_t *output)
     return new s_model_t(ctx, input, output);
 }
 
-void free_s_model(s_model_t *model) { delete model; }
+void del_s_model(s_model_t *model) { delete model; }
 
 model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
                  uint32_t batch_size)

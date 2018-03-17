@@ -58,16 +58,16 @@ s_model_t *vgg16(shape_t *image_shape, uint32_t arity)
             NULL,                                       //
         },
         x);
-    free_shape_ctx(sc);
-    free_s_layer(c1);
-    free_s_layer(c2);
-    free_s_layer(c3);
-    free_s_layer(c4_5);
-    free_s_layer(f4096);
-    free_s_layer(f_out);
-    free_s_layer(pool);
-    free_s_layer(relu);
-    free_s_layer(out);
+    del_shape_ctx(sc);
+    del_s_layer(c1);
+    del_s_layer(c2);
+    del_s_layer(c3);
+    del_s_layer(c4_5);
+    del_s_layer(f4096);
+    del_s_layer(f_out);
+    del_s_layer(pool);
+    del_s_layer(relu);
+    del_s_layer(out);
     printf("[y] creating model\n");
     return new_s_model(ctx, x, y);
 }
@@ -80,7 +80,7 @@ dataset_t *fake_imagenet()
 {
     shape_t *image_shape = new_shape(3, height, width, 3);
     dataset_t *p_ds = new_fake_dataset(image_shape, class_number);
-    free_shape(image_shape);
+    del_shape(image_shape);
     return p_ds;
 }
 
@@ -89,7 +89,7 @@ int main()
     shape_t *image_shape = new_shape(3, height, width, 3);
     s_model_t *model = vgg16(image_shape, class_number);
     s_model_info(model);
-    free_s_model(model);
-    free_shape(image_shape);
+    del_s_model(model);
+    del_shape(image_shape);
     return 0;
 }

@@ -7,7 +7,7 @@ static GC<model_ctx_t> gc;
 
 model_ctx_t *new_model_ctx() { return gc(new model_ctx_t); }
 
-void free_model_ctx(model_ctx_t *model) { delete model; }
+void del_model_ctx(model_ctx_t *model) { delete model; }
 
 node_t *make_placeholder(model_ctx_t *model, const shape_t *shape)
 {
@@ -34,4 +34,4 @@ model_t *new_model(model_ctx_t *ctx, node_t *input, node_t *output)
     return new model_t(ctx, input, output);
 }
 
-void free_model(model_t *model) { delete model; }
+void del_model(model_t *model) { delete model; }

@@ -56,9 +56,9 @@ int main()
     // run_trainer(trainer, ds1);
     // test_trainer(trainer, ds2);
     experiment(trainer, ds1, ds2);
-    free_model(model);
-    free_trainer(trainer);
-    free_dataset(ds1);
-    free_dataset(ds2);
+    del_model(model);
+    del_trainer(trainer);
+    del_dataset(ds1);
+    del_dataset(ds2);
     return 0;
 }

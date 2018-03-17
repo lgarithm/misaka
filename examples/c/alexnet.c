@@ -56,16 +56,16 @@ s_model_t *alexnet(shape_t *image_shape, uint32_t arity)
             NULL,                                     //
         },
         x);
-    free_shape_ctx(sc);
-    free_s_layer(c1);
-    free_s_layer(c2);
-    free_s_layer(c3_c4);
-    free_s_layer(c5);
-    free_s_layer(f4096);
-    free_s_layer(f_out);
-    free_s_layer(pool);
-    free_s_layer(relu);
-    free_s_layer(out);
+    del_shape_ctx(sc);
+    del_s_layer(c1);
+    del_s_layer(c2);
+    del_s_layer(c3_c4);
+    del_s_layer(c5);
+    del_s_layer(f4096);
+    del_s_layer(f_out);
+    del_s_layer(pool);
+    del_s_layer(relu);
+    del_s_layer(out);
     printf("[y] creating model\n");
     return new_s_model(ctx, x, y);
 }
@@ -78,7 +78,7 @@ dataset_t *fake_imagenet()
 {
     shape_t *image_shape = new_shape(3, height, width, 3);
     dataset_t *p_ds = new_fake_dataset(image_shape, class_number);
-    free_shape(image_shape);
+    del_shape(image_shape);
     return p_ds;
 }
 
@@ -92,10 +92,10 @@ int main()
     // dataset_t *ds2 = fake_imagenet();
     const uint32_t batch_size = 2;
     s_experiment(trainer, ds1, NULL, batch_size);
-    free_dataset(ds1);
-    // free_dataset(ds2);
-    free_s_trainer(trainer);
-    free_s_model(model);
-    free_shape(image_shape);
+    del_dataset(ds1);
+    // del_dataset(ds2);
+    del_s_trainer(trainer);
+    del_s_model(model);
+    del_shape(image_shape);
     return 0;
 }

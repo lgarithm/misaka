@@ -17,7 +17,7 @@ shape_t *new_shape(int n, ...)
     return new shape_t(dims);
 }
 
-void free_shape(shape_t *shape) { delete shape; }
+void del_shape(shape_t *shape) { delete shape; }
 
 uint32_t shape_rank(const shape_t *shape) { return shape->rank(); }
 
@@ -25,7 +25,7 @@ uint32_t shape_dim(const shape_t *shape) { return shape->dim(); }
 
 shape_ctx_t *new_shape_ctx() { return new shape_ctx_t; }
 
-void free_shape_ctx(shape_ctx_t *ctx) { delete ctx; }
+void del_shape_ctx(shape_ctx_t *ctx) { delete ctx; }
 
 const shape_t *mk_shape(shape_ctx_t *ctx, int n, ...)
 {

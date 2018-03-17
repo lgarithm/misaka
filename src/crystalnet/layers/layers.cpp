@@ -16,7 +16,7 @@ s_node_t *transform(s_model_ctx_t *ctx, const s_layer_t *l, s_node_t *x)
     return (*l)(*ctx, x);
 }
 
-void free_s_layer(s_layer_t *layer) { delete layer; }
+void del_s_layer(s_layer_t *layer) { delete layer; }
 
 GC<initializer_t> conv_nhwc::gc;
 GC<initializer_t> dense::gc;

@@ -21,9 +21,9 @@ model_t *slp_model(shape_t *image_shape, int arity)
     node_t *args3[] = {op2};
     node_t *op3 = make_operator(m, op_softmax, args3);
 
-    free_shape(lable_shape);
-    free_shape(weight_shape);
-    free_shape(x_wrap_shape);
+    del_shape(lable_shape);
+    del_shape(weight_shape);
+    del_shape(x_wrap_shape);
     return new_model(m, x_, op3);
 }
 
@@ -40,10 +40,10 @@ int main()
     dataset_t *ds2 = load_cifar();
     run_trainer(trainer, ds1);
     test_trainer(trainer, ds2);
-    free_shape(image_shape);
-    free_model(model);
-    free_trainer(trainer);
-    free_dataset(ds1);
-    free_dataset(ds2);
+    del_shape(image_shape);
+    del_model(model);
+    del_trainer(trainer);
+    del_dataset(ds1);
+    del_dataset(ds2);
     return 0;
 }

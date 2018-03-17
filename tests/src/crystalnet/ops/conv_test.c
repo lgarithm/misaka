@@ -18,8 +18,8 @@ void test_1()
     shape_t *out_shape = infer(op, shape_list);
     assert(shape_rank(out_shape) == 3);
     assert(shape_dim(out_shape) == 26 * 26 * 64);
-    free_shape(out_shape);
-    free_shape_ctx(sc);
+    del_shape(out_shape);
+    del_shape_ctx(sc);
 }
 
 void test_2()
@@ -35,8 +35,8 @@ void test_2()
     shape_t *out_shape = infer(op, shape_list);
     assert(shape_rank(out_shape) == 4);
     assert(shape_dim(out_shape) == 2 * 26 * 26 * 64);
-    free_shape(out_shape);
-    free_shape_ctx(sc);
+    del_shape(out_shape);
+    del_shape_ctx(sc);
 }
 
 int main()

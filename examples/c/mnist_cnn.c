@@ -64,14 +64,14 @@ s_model_t *cnn(shape_t *image_shape, uint8_t arity)
                                  NULL,
                              },
                              x_);
-    free_shape_ctx(sc);
-    free_s_layer(c1);
-    free_s_layer(c2);
-    free_s_layer(f1);
-    free_s_layer(f2);
-    free_s_layer(pool);
-    free_s_layer(act);
-    free_s_layer(out);
+    del_shape_ctx(sc);
+    del_s_layer(c1);
+    del_s_layer(c2);
+    del_s_layer(f1);
+    del_s_layer(f2);
+    del_s_layer(pool);
+    del_s_layer(act);
+    del_s_layer(out);
     printf("[y] creating model\n");
     return new_s_model(ctx, x, y);
 }
@@ -87,10 +87,10 @@ int main()
     dataset_t *ds1 = load_mnist("train");
     dataset_t *ds2 = load_mnist("t10k");
     s_experiment(trainer, ds1, ds2, 10);
-    free_dataset(ds1);
-    free_dataset(ds2);
-    free_s_model(model);
-    free_s_trainer(trainer);
-    free_shape(image_shape);
+    del_dataset(ds1);
+    del_dataset(ds2);
+    del_s_model(model);
+    del_s_trainer(trainer);
+    del_shape(image_shape);
     return 0;
 }

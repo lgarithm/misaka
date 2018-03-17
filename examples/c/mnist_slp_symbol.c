@@ -17,7 +17,7 @@ s_model_t *slp(shape_t *image_shape, uint8_t arity)
     symbol op2 = apply(ctx, op_add, (symbol[]){op1, b});
     symbol op3 = apply(ctx, op_softmax, (symbol[]){op2});
 
-    free_shape_ctx(sc);
+    del_shape_ctx(sc);
     return new_s_model(ctx, x, op3);
 }
 
@@ -32,10 +32,10 @@ int main()
     dataset_t *ds1 = load_mnist("train");
     dataset_t *ds2 = load_mnist("t10k");
     s_experiment(trainer, ds1, ds2, 10000);
-    free_dataset(ds1);
-    free_dataset(ds2);
-    free_s_trainer(trainer);
-    free_s_model(model);
-    free_shape(image_shape);
+    del_dataset(ds1);
+    del_dataset(ds2);
+    del_s_trainer(trainer);
+    del_s_model(model);
+    del_shape(image_shape);
     return 0;
 }

@@ -22,8 +22,8 @@ s_model_t *slp(shape_t *image_shape, uint8_t arity)
     s_node_t *args3[] = {op2};
     s_node_t *op3 = apply(ctx, op_softmax, args3);
 
-    free_shape(lable_shape);
-    free_shape(weight_shape);
+    del_shape(lable_shape);
+    del_shape(weight_shape);
     return new_s_model(ctx, x, op3);
 }
 
@@ -32,8 +32,8 @@ void test_1()
     uint8_t arity = 10;
     shape_t *image_shape = new_shape(2, 28, 28);
     s_model_t *model = slp(image_shape, arity);
-    free_s_model(model);
-    free_shape(image_shape);
+    del_s_model(model);
+    del_shape(image_shape);
 }
 
 int main()

@@ -7,7 +7,7 @@ trainer_t *new_trainer(model_t *model, operator_t *loss, optimizer_t *optimizer)
     return new trainer_t(model, loss, optimizer);
 }
 
-void free_trainer(trainer_t *trainer) { delete trainer; }
+void del_trainer(trainer_t *trainer) { delete trainer; }
 
 void run_trainer(trainer_t *trainer, dataset_t *ds) { trainer->run(*ds); }
 
@@ -30,6 +30,6 @@ s_trainer_t *new_s_trainer(s_model_t *model, operator_t *loss,
     return new s_trainer_t(model, loss, optimizer);
 }
 
-void free_s_trainer(s_trainer_t *trainer) { delete trainer; }
+void del_s_trainer(s_trainer_t *trainer) { delete trainer; }
 
 void s_trainer_run(s_trainer_t *trainer, dataset_t *ds) { trainer->run(*ds); }
