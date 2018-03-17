@@ -3,9 +3,9 @@
 // y = softmax(xw + b)
 model_t *slp_model(shape_t *image_shape, int arity)
 {
-    shape_t *lable_shape = make_shape(1, arity);
-    shape_t *weight_shape = make_shape(2, shape_dim(image_shape), arity);
-    shape_t *x_wrap_shape = make_shape(1, shape_dim(image_shape));
+    shape_t *lable_shape = new_shape(1, arity);
+    shape_t *weight_shape = new_shape(2, shape_dim(image_shape), arity);
+    shape_t *x_wrap_shape = new_shape(1, shape_dim(image_shape));
 
     model_ctx_t *m = new_model_ctx();
     node_t *x_ = make_placeholder(m, image_shape);
@@ -33,7 +33,7 @@ int main()
     int height = 32;
     int depth = 3;
     int n = 10;
-    shape_t *image_shape = make_shape(3, depth, width, height);
+    shape_t *image_shape = new_shape(3, depth, width, height);
     model_t *model = slp_model(image_shape, n);
     trainer_t *trainer = new_trainer(model, op_xentropy, opt_sgd);
     dataset_t *ds1 = load_cifar();

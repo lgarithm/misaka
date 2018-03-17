@@ -25,6 +25,7 @@ typedef struct shape_t shape_t;
 typedef struct shape_list_t shape_list_t;
 typedef struct shape_ctx_t shape_ctx_t;
 typedef struct tensor_t tensor_t;
+
 typedef struct node_t node_t;
 typedef struct model_t model_t;
 typedef struct model_ctx_t model_ctx_t;
@@ -33,17 +34,15 @@ typedef struct model_ctx_t model_ctx_t;
 typedef struct forward_ctx_t forward_ctx_t;
 typedef struct backward_ctx_t backward_ctx_t;
 typedef struct operator_t operator_t;
-typedef struct layer_t layer_t;
-
 typedef struct shape_func_t shape_func_t;
 typedef struct forward_func_t forward_func_t;
 typedef struct backward_func_t backward_func_t;
 
-extern shape_t *make_shape(int, ...);
+extern shape_t *new_shape(int, ...);
 extern void free_shape(shape_t *);
 extern uint32_t shape_dim(const shape_t *);
 extern uint32_t shape_rank(const shape_t *);
-extern shape_ctx_t *make_shape_ctx();
+extern shape_ctx_t *new_shape_ctx();
 extern void free_shape_ctx(shape_ctx_t *);
 extern const shape_t *mk_shape(shape_ctx_t *, int, ...);
 extern const shape_list_t *mk_shape_list(shape_ctx_t *,

@@ -23,7 +23,7 @@ struct trait_ctx_t {
     }
 };
 
-trait_ctx_t *make_trait_ctx() { return new trait_ctx_t; }
+trait_ctx_t *new_trait_ctx() { return new trait_ctx_t; }
 
 void free_trait_ctx(trait_ctx_t *ctx) { delete ctx; }
 

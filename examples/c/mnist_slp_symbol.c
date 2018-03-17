@@ -5,7 +5,7 @@
 // y = softmax(flatten(x) * w + b)
 s_model_t *slp(shape_t *image_shape, uint8_t arity)
 {
-    shape_ctx_t *sc = make_shape_ctx();
+    shape_ctx_t *sc = new_shape_ctx();
     s_model_ctx_t *ctx = new_s_model_ctx();
 
     symbol x = var(ctx, image_shape);
@@ -26,7 +26,7 @@ int main()
     int width = 28;
     int height = 28;
     uint8_t n = 10;
-    shape_t *image_shape = make_shape(2, width, height);
+    shape_t *image_shape = new_shape(2, width, height);
     s_model_t *model = slp(image_shape, n);
     s_trainer_t *trainer = new_s_trainer(model, op_xentropy, opt_sgd);
     dataset_t *ds1 = load_mnist("train");

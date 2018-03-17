@@ -5,9 +5,9 @@
 // y = softmax(flatten(x) * w + b)
 s_model_t *slp(shape_t *image_shape, uint8_t arity)
 {
-    shape_t *lable_shape = make_shape(1, arity);
-    shape_t *weight_shape = make_shape(2, shape_dim(image_shape), arity);
-    shape_t *x_wrap_shape = make_shape(1, shape_dim(image_shape));
+    shape_t *lable_shape = new_shape(1, arity);
+    shape_t *weight_shape = new_shape(2, shape_dim(image_shape), arity);
+    shape_t *x_wrap_shape = new_shape(1, shape_dim(image_shape));
 
     s_model_ctx_t *ctx = new_s_model_ctx();
     s_node_t *x = var(ctx, image_shape);
@@ -30,7 +30,7 @@ s_model_t *slp(shape_t *image_shape, uint8_t arity)
 void test_1()
 {
     uint8_t arity = 10;
-    shape_t *image_shape = make_shape(2, 28, 28);
+    shape_t *image_shape = new_shape(2, 28, 28);
     s_model_t *model = slp(image_shape, arity);
     free_s_model(model);
     free_shape(image_shape);

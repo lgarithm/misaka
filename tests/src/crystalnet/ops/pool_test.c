@@ -7,7 +7,7 @@ typedef shape_t const *p_shape_t;
 
 void test_1()
 {
-    shape_ctx_t *sc = make_shape_ctx();
+    shape_ctx_t *sc = new_shape_ctx();
     const shape_list_t *shape_list = mk_shape_list( //
         sc, (p_shape_t[]){
                 mk_shape(sc, 3, 28, 28, 32),
@@ -23,7 +23,7 @@ void test_1()
 
 void test_2()
 {
-    shape_ctx_t *sc = make_shape_ctx();
+    shape_ctx_t *sc = new_shape_ctx();
     const shape_list_t *shape_list = mk_shape_list( //
         sc, (p_shape_t[]){
                 mk_shape(sc, 4, 10, 28, 28, 32),

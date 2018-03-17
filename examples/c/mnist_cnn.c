@@ -20,7 +20,7 @@ s_node_t *transform_all(s_model_ctx_t *ctx, p_layer_t ls[], s_node_t *x)
 typedef shape_t const *p_shape_t;
 s_model_t *cnn(shape_t *image_shape, uint8_t arity)
 {
-    shape_ctx_t *sc = make_shape_ctx();
+    shape_ctx_t *sc = new_shape_ctx();
     s_model_ctx_t *ctx = new_s_model_ctx();
 
     s_layer_t *c1 =
@@ -81,7 +81,7 @@ int main()
     const uint32_t height = 28;
     const uint32_t width = 28;
     const uint32_t n = 10;
-    shape_t *image_shape = make_shape(2, height, width);
+    shape_t *image_shape = new_shape(2, height, width);
     s_model_t *model = cnn(image_shape, n);
     s_trainer_t *trainer = new_s_trainer(model, op_xentropy, opt_adam);
     dataset_t *ds1 = load_mnist("train");

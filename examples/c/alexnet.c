@@ -7,8 +7,8 @@ typedef shape_t const *p_shape_t;
 // https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
 s_model_t *alexnet(shape_t *image_shape, uint32_t arity)
 {
-    shape_ctx_t *sc = make_shape_ctx();
-    trait_ctx_t *tc = make_trait_ctx();
+    shape_ctx_t *sc = new_shape_ctx();
+    trait_ctx_t *tc = new_trait_ctx();
     s_model_ctx_t *ctx = new_s_model_ctx();
 
     s_layer_t *c1 = new_layer_conv2d(               //
@@ -76,7 +76,7 @@ const uint32_t class_number = 1000;
 
 dataset_t *fake_imagenet()
 {
-    shape_t *image_shape = make_shape(3, height, width, 3);
+    shape_t *image_shape = new_shape(3, height, width, 3);
     dataset_t *p_ds = new_fake_dataset(image_shape, class_number);
     free_shape(image_shape);
     return p_ds;
@@ -84,7 +84,7 @@ dataset_t *fake_imagenet()
 
 int main()
 {
-    shape_t *image_shape = make_shape(3, height, width, 3);
+    shape_t *image_shape = new_shape(3, height, width, 3);
     s_model_t *model = alexnet(image_shape, class_number);
     s_model_info(model);
     s_trainer_t *trainer = new_s_trainer(model, op_xentropy, opt_adam);
