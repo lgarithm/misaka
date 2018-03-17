@@ -2,16 +2,6 @@
 
 #include <crystalnet-ext.h>
 
-typedef s_layer_t const *p_layer_t;
-
-s_node_t *transform_all(s_model_ctx_t *ctx, p_layer_t ls[], s_node_t *x)
-{
-    for (p_layer_t *pl = ls; *pl; ++pl) {
-        x = transform(ctx, *pl, x);
-    }
-    return x;
-}
-
 typedef shape_t const *p_shape_t;
 
 // https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf

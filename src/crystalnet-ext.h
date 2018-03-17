@@ -23,6 +23,8 @@ extern s_layer_t *const new_layer_conv2d(const filter_trait_t *,
                                          const padding_trait_t *,
                                          const stride_trait_t *);
 
+typedef s_layer_t const *p_layer_t;
+extern s_node_t *transform_all(s_model_ctx_t *, p_layer_t layers[], s_node_t *);
 // debug APIs
 extern void s_model_info(const s_model_t *);
 extern dataset_t *new_fake_dataset(const shape_t *, uint32_t);
