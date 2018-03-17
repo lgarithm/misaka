@@ -1,7 +1,7 @@
 #include <crystalnet.h>
 #include <crystalnet/core/tensor.hpp>
 
-tensor_t *new_tensor(shape_t *shape, uint8_t dtype)
+tensor_t *new_tensor(const shape_t *shape, uint8_t dtype)
 {
     return new tensor_t(*shape, dtype);
 }

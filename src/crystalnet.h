@@ -38,8 +38,8 @@ typedef struct shape_func_t shape_func_t;
 typedef struct forward_func_t forward_func_t;
 typedef struct backward_func_t backward_func_t;
 
-extern shape_t *new_shape(int, ...);
-extern void del_shape(shape_t *);
+extern const shape_t *new_shape(int, ...);
+extern void del_shape(const shape_t *);
 extern uint32_t shape_dim(const shape_t *);
 extern uint32_t shape_rank(const shape_t *);
 extern shape_ctx_t *new_shape_ctx();
@@ -48,7 +48,7 @@ extern const shape_t *mk_shape(shape_ctx_t *, int, ...);
 extern const shape_list_t *mk_shape_list(shape_ctx_t *,
                                          const shape_t *const p_shapes[]);
 
-extern tensor_t *new_tensor(shape_t *, uint8_t);
+extern tensor_t *new_tensor(const shape_t *, uint8_t);
 extern void del_tensor(tensor_t *);
 extern const shape_t *tensor_shape(tensor_t *);
 
@@ -63,7 +63,7 @@ extern node_t *make_parameter(model_ctx_t *, const shape_t *);
 
 typedef node_t *pnode_list_t[];
 extern node_t *make_operator(model_ctx_t *, operator_t *, pnode_list_t);
-extern node_t *wrap_node(model_ctx_t *, shape_t *, node_t *);
+extern node_t *wrap_node(model_ctx_t *, const shape_t *, node_t *);
 
 // operators
 extern operator_t *register_op(const char *const, uint8_t, shape_func_t *,

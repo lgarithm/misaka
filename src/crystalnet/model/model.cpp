@@ -24,7 +24,7 @@ node_t *make_operator(model_ctx_t *model, operator_t *op, node_t *nodes[])
     return model->make_operator(*op, nodes, op->name.c_str());
 }
 
-node_t *wrap_node(model_ctx_t *model, shape_t *shape, node_t *node)
+node_t *wrap_node(model_ctx_t *model, const shape_t *shape, node_t *node)
 {
     return model->wrap(*shape, *node);
 }

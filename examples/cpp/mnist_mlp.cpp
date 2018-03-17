@@ -3,7 +3,7 @@
 // fc(w, b)(x) = xw + b
 // fc'(w, b)(x) = relu(fc(x))
 // y = softmax \circ fc(w3, b3) \circ fc'(w2, b2) \circ fc'(w1 ,b1)
-model_t *mlp_model(shape_t *image_shape, uint32_t arity)
+model_t *mlp_model(const shape_t *image_shape, uint32_t arity)
 {
     const uint32_t n0 = shape_dim(image_shape);
     const uint32_t n1 = 128;
