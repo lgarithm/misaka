@@ -5,12 +5,14 @@
 void s_model_info(const s_model_t *m)
 {
     uint32_t tot = 0;
-    for (const auto &n : m->ctx->gc.allocs) {
+    uint32_t idx = 0;
+    for (const auto &n : m->ctx->params.items) {
+        ++idx;
         tot += n->shape.dim();
-        printf("[d] %-12u %s\n", n->shape.dim(),
+        printf("[i] %-4u %-12u %s\n", idx, n->shape.dim(),
                std::to_string(n->shape).c_str());
     }
-    printf("[s] total dim: %u\n", tot);
+    printf("[i] total dim: %u\n", tot);
 }
 
 dataset_t *new_fake_dataset(const shape_t *p_shape, uint32_t arity)
