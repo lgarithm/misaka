@@ -89,5 +89,3 @@ struct s_trainer_t {
         return std::make_pair(yes, yes + no);
     }
 };
-
-#include <crystalnet/train/trainer_old.hpp>

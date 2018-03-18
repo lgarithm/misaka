@@ -55,5 +55,5 @@ model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
         check(false);
     }
     auto inputs = places[0];
-    return new_model(ctx, inputs, output);
+    return new model_t(ctx, inputs, output);
 }
