@@ -9,7 +9,7 @@ s_model_t *alexnet(const shape_t *image_shape, uint32_t arity)
 {
     shape_ctx_t *sc = new_shape_ctx();
     trait_ctx_t *tc = new_trait_ctx();
-    s_model_ctx_t *ctx = new_s_model_ctx();
+    s_model_ctx_t *ctx = make_s_model_ctx();
 
     s_layer_t *c1 = new_layer_conv2d(               //
         mk_filter(tc, mk_shape(sc, 3, 11, 11, 96)), //

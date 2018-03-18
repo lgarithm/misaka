@@ -6,7 +6,7 @@
 
 static GC<s_model_ctx_t> gc;
 
-s_model_ctx_t *new_s_model_ctx() { return gc(new s_model_ctx_t); }
+s_model_ctx_t *make_s_model_ctx() { return gc(new s_model_ctx_t); }
 
 s_node_t *var(s_model_ctx_t *ctx, const shape_t *shape)
 {

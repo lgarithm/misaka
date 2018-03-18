@@ -1,47 +1,39 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include <crystalnet.h>
+#include <crystalnet-ext.h>
 
 // l1 = pool(relu(conv(x)))
 // l2 = pool(relu(conv(l1)))
 // y = softmax(dense(relu(dense(l2))))
 
-typedef s_layer_t const *p_layer_t;
-
-s_node_t *transform_all(s_model_ctx_t *ctx, p_layer_t ls[], s_node_t *x)
-{
-    for (p_layer_t *pl = ls; *pl; ++pl) {
-        x = transform(ctx, *pl, x);
-    }
-    return x;
-}
-
 typedef shape_t const *p_shape_t;
+
 s_model_t *cnn(const shape_t *image_shape, uint8_t arity)
 {
     shape_ctx_t *sc = new_shape_ctx();
-    s_model_ctx_t *ctx = new_s_model_ctx();
+    s_model_ctx_t *ctx = make_s_model_ctx();
 
-    s_layer_t *c1 =
-        new_layer_conv_nhwc(mk_shape_list(sc, (p_shape_t[]){
-                                                  mk_shape(sc, 3, 5, 5, 32),
-                                                  NULL,
-                                              }));
-    s_layer_t *c2 =
-        new_layer_conv_nhwc(mk_shape_list(sc, (p_shape_t[]){
-                                                  mk_shape(sc, 3, 5, 5, 64),
-                                                  NULL,
-                                              }));
-    s_layer_t *f1 = new_layer_dense(mk_shape_list(sc, (p_shape_t[]){
-                                                          mk_shape(sc, 1, 1024),
-                                                          NULL,
-                                                      }));
-    s_layer_t *f2 =
-        new_layer_dense(mk_shape_list(sc, (p_shape_t[]){
-                                              mk_shape(sc, 1, arity),
-                                              NULL,
-                                          }));
+    s_layer_t *c1 = new_layer_conv_nhwc(mk_shape_list( //
+        sc, (p_shape_t[]){
+                mk_shape(sc, 3, 5, 5, 32),
+                NULL,
+            }));
+    s_layer_t *c2 = new_layer_conv_nhwc(mk_shape_list( //
+        sc, (p_shape_t[]){
+                mk_shape(sc, 3, 5, 5, 64),
+                NULL,
+            }));
+    s_layer_t *f1 = new_layer_dense(mk_shape_list( //
+        sc, (p_shape_t[]){
+                mk_shape(sc, 1, 1024),
+                NULL,
+            }));
+    s_layer_t *f2 = new_layer_dense(mk_shape_list( //
+        sc, (p_shape_t[]){
+                mk_shape(sc, 1, arity),
+                NULL,
+            }));
     s_layer_t *pool = new_layer_pool_max(NULL); //
     s_layer_t *act = new_layer_relu(NULL);      //
     s_layer_t *out = new_layer_softmax(NULL);

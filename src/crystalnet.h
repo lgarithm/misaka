@@ -67,7 +67,7 @@ typedef struct s_node_t s_node_t;
 typedef s_node_t *symbol;
 typedef struct s_model_t s_model_t;
 typedef struct s_model_ctx_t s_model_ctx_t;
-extern s_model_ctx_t *new_s_model_ctx();
+extern s_model_ctx_t *make_s_model_ctx();
 extern s_model_t *new_s_model(s_model_ctx_t *, s_node_t *, s_node_t *);
 extern void del_s_model(s_model_t *);
 extern s_node_t *var(s_model_ctx_t *, const shape_t *);

@@ -6,7 +6,7 @@
 s_model_t *slp(const shape_t *image_shape, uint8_t arity)
 {
     shape_ctx_t *sc = new_shape_ctx();
-    s_model_ctx_t *ctx = new_s_model_ctx();
+    s_model_ctx_t *ctx = make_s_model_ctx();
 
     symbol x = var(ctx, image_shape);
     symbol x_ = reshape(ctx, mk_shape(sc, 1, shape_dim(image_shape)), x);
