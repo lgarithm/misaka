@@ -5,6 +5,7 @@
 #include <crystalnet/data/dataset.hpp>
 #include <crystalnet/linag/base.hpp>
 #include <crystalnet/model/model.hpp>
+#include <crystalnet/ops/argmax.hpp>
 #include <crystalnet/symbol/model.hpp>
 #include <crystalnet/train/optimizer.hpp>
 #include <crystalnet/utility/range.hpp>
@@ -80,8 +81,8 @@ struct s_trainer_t {
             m->output->forward();
             using T = float;
             for (auto i : range(batch_size)) {
-                auto p = argmax<T>(as_vector_ref<T>(label_s[i]));
-                auto q = argmax<T>(as_vector_ref<T>(m->output->value()[i]));
+                auto p = argmax(r_tensor_ref_t<T>(label_s[i]));
+                auto q = argmax(r_tensor_ref_t<T>(m->output->value()[i]));
                 p == q ? ++yes : ++no;
             }
             printf("test step: %u, %u/%u\n", step, yes, yes + no);
