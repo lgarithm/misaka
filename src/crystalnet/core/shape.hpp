@@ -51,6 +51,8 @@ struct shape_t {
         dims.insert(dims.end(), this->dims.begin(), this->dims.end());
         return shape_t(dims);
     }
+
+    bool operator==(const shape_t &other) const { return dims == other.dims; }
 };
 
 struct shape_list_t {
@@ -117,10 +119,10 @@ inline string to_string(const shape_t &shape)
     string buf;
     for (auto d : shape.dims) {
         if (!buf.empty()) {
-            buf += ",";
+            buf += ", ";
         }
         buf += to_string(d);
     }
-    return "shape(" + buf + ")";
+    return "[" + buf + "]";
 }
 }

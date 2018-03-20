@@ -1,4 +1,4 @@
-#include <crystalnet.h>
+#include <crystalnet-internal.h>
 #include <crystalnet/core/gc.hpp>
 #include <crystalnet/model/model.hpp>
 #include <crystalnet/symbol/model.hpp>
@@ -44,7 +44,7 @@ model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
                  uint32_t batch_size)
 {
     static GC<model_ctx_t> gc;
-    printf("[D] realise:\n");
+    printf("[D] realising s_model_t\n");
     model_option_t opt(m->input, batch_size);
     model_ctx_t *ctx = gc(new model_ctx_t(p_ctx));
     auto output = m->output->realize(*ctx, opt);
@@ -55,5 +55,6 @@ model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
         check(false);
     }
     auto inputs = places[0];
+    printf("[D] realized s_model_t\n");
     return new model_t(ctx, inputs, output);
 }

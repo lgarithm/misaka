@@ -27,21 +27,13 @@ s_model_t *alexnet(const shape_t *image_shape, uint32_t arity)
         mk_filter(tc, mk_shape(sc, 3, 3, 3, 256)),  //
         mk_padding(tc, mk_shape(sc, 2, 1, 1)),      //
         NULL);                                      //
-    s_layer_t *f4096 = new_layer_dense(             //
-        mk_shape_list(sc, (p_shape_t[]){
-                              mk_shape(sc, 1, 4096),
-                              NULL,
-                          }));
-    s_layer_t *f_out = new_layer_dense( //
-        mk_shape_list(sc, (p_shape_t[]){
-                              mk_shape(sc, 1, arity),
-                              NULL,
-                          }));
-    s_layer_t *pool = new_layer_pool2d(        //
-        mk_filter(tc, mk_shape(sc, 2, 3, 3)),  //
-        mk_stride(tc, mk_shape(sc, 2, 2, 2))); //
-    s_layer_t *relu = new_layer_relu(NULL);    //
-    s_layer_t *out = new_layer_softmax(NULL);
+    s_layer_t *f4096 = new_layer_dense(4096);       //
+    s_layer_t *f_out = new_layer_dense(arity);      //
+    s_layer_t *pool = new_layer_pool2d(             //
+        mk_filter(tc, mk_shape(sc, 2, 3, 3)),       //
+        mk_stride(tc, mk_shape(sc, 2, 2, 2)));      //
+    s_layer_t *relu = new_layer_relu();             //
+    s_layer_t *out = new_layer_softmax();
 
     printf("[x] creating model\n");
     symbol x = var(ctx, image_shape);

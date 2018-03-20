@@ -1,9 +1,9 @@
-#include <assert.h>
+#include <stdint.h>
 
 #include <crystalnet.h>
 
 // y = softmax(flatten(x) * w + b)
-s_model_t *slp(const shape_t *image_shape, uint8_t arity)
+s_model_t *slp(const shape_t *image_shape, uint32_t arity)
 {
     shape_ctx_t *sc = new_shape_ctx();
     s_model_ctx_t *ctx = make_s_model_ctx();
@@ -23,9 +23,9 @@ s_model_t *slp(const shape_t *image_shape, uint8_t arity)
 
 int main()
 {
-    int width = 28;
-    int height = 28;
-    uint8_t n = 10;
+    const uint32_t width = 28;
+    const uint32_t height = 28;
+    const uint32_t n = 10;
     const shape_t *image_shape = new_shape(2, width, height);
     s_model_t *model = slp(image_shape, n);
     s_trainer_t *trainer = new_s_trainer(model, op_xentropy, opt_sgd);

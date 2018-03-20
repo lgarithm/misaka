@@ -1,12 +1,11 @@
 #pragma once
 #include <utility>
 
-#include <crystalnet.h>
+#include <crystalnet-internal.h>
 #include <crystalnet/data/dataset.hpp>
 #include <crystalnet/linag/base.hpp>
 #include <crystalnet/model/model.hpp>
 #include <crystalnet/ops/argmax.hpp>
-#include <crystalnet/symbol/model.hpp>
 #include <crystalnet/train/optimizer.hpp>
 #include <crystalnet/utility/range.hpp>
 

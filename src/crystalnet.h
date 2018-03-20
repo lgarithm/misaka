@@ -75,17 +75,6 @@ extern s_node_t *covar(s_model_ctx_t *, const shape_t *);
 extern s_node_t *reshape(s_model_ctx_t *, const shape_t *, const s_node_t *);
 extern s_node_t *apply(s_model_ctx_t *, const operator_t *, s_node_t *args[]);
 
-// layer APIs
-typedef struct s_layer_t s_layer_t;
-typedef s_layer_t *(layer_func_t)(const shape_list_t *);
-extern layer_func_t *const new_layer_dense;
-extern layer_func_t *const new_layer_relu;
-extern layer_func_t *const new_layer_softmax;
-extern layer_func_t *const new_layer_conv_nhwc; // TODO: deprecate
-extern layer_func_t *const new_layer_pool_max;  // TODO: deprecate
-extern s_node_t *transform(s_model_ctx_t *, const s_layer_t *, s_node_t *);
-extern void del_s_layer(s_layer_t *);
-
 // training
 typedef struct dataset_t dataset_t;
 typedef struct s_trainer_t s_trainer_t;

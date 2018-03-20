@@ -1,6 +1,6 @@
 #include <assert.h>
 
-#include <crystalnet.h>
+#include <crystalnet-internal.h>
 
 // y = softmax(flatten(x) * w + b)
 s_model_t *slp(const shape_t *image_shape, uint8_t arity)
@@ -24,6 +24,7 @@ s_model_t *slp(const shape_t *image_shape, uint8_t arity)
 
     del_shape(lable_shape);
     del_shape(weight_shape);
+    del_shape(x_wrap_shape);
     return new_s_model(ctx, x, op3);
 }
 
@@ -31,8 +32,14 @@ void test_1()
 {
     uint8_t arity = 10;
     const shape_t *image_shape = new_shape(2, 28, 28);
-    s_model_t *model = slp(image_shape, arity);
-    del_s_model(model);
+    s_model_t *sm = slp(image_shape, arity);
+    parameter_ctx_t *pc = new_parameter_ctx();
+    for (int i = 1; i <= 3; ++i) {
+        model_t *pm = realize(pc, sm, i);
+        del_model(pm);
+    }
+    del_parameter_ctx(pc);
+    del_s_model(sm);
     del_shape(image_shape);
 }
 
