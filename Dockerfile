@@ -1,4 +1,4 @@
-FROM lgarithm/crystalnet-dev:latest
+FROM lgarithm/crystalnet-dev:ubuntu
 
 COPY . /crystalnet
 WORKDIR /crystalnet
