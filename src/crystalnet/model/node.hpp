@@ -9,7 +9,6 @@
 #include <crystalnet/core/operator.hpp>
 #include <crystalnet/core/shape.hpp>
 #include <crystalnet/core/tensor.hpp>
-#include <crystalnet/linag/base.hpp>
 
 struct node_t {
     // int idx; // TODO: support index

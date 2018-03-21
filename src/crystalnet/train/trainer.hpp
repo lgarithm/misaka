@@ -3,7 +3,6 @@
 
 #include <crystalnet-internal.h>
 #include <crystalnet/data/dataset.hpp>
-#include <crystalnet/linag/base.hpp>
 #include <crystalnet/model/model.hpp>
 #include <crystalnet/ops/argmax.hpp>
 #include <crystalnet/train/optimizer.hpp>
