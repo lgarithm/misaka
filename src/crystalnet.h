@@ -25,6 +25,7 @@ typedef struct shape_t shape_t;
 typedef struct shape_list_t shape_list_t;
 typedef struct shape_ctx_t shape_ctx_t;
 typedef struct tensor_t tensor_t;
+typedef struct tensor_ref_t tensor_ref_t;
 
 // TODO: make it possible to add user defined operators
 typedef struct forward_ctx_t forward_ctx_t;
@@ -45,7 +46,10 @@ extern const shape_list_t *mk_shape_list(shape_ctx_t *,
                                          const shape_t *const p_shapes[]);
 
 extern tensor_t *new_tensor(const shape_t *, uint8_t);
-extern void del_tensor(tensor_t *);
+extern void del_tensor(const tensor_t *);
+extern const tensor_ref_t *new_tensor_ref(const tensor_t *);
+extern void del_tensor_ref(const tensor_ref_t *);
+extern void *tensor_data_ptr(const tensor_ref_t *);
 extern const shape_t *tensor_shape(tensor_t *);
 
 // operators

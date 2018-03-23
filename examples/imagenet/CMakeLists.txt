@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.9)
+project(tiny-imagenet)
+
+set(CMAKE_CXX_STANDARD 17)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+
+set(INSTALL_PREFIX $ENV{HOME}/local/crystalnet)  # make it configurable
+include_directories(${INSTALL_PREFIX}/include)
+link_directories(${INSTALL_PREFIX}/lib)
+
+
+add_executable(alexnet src/alexnet-main.c src/alexnet.c)
+target_link_libraries(alexnet crystalnet)
+
+add_executable(test-imagenet src/test-imagenet.cpp src/alexnet.c src/imagenet.cpp)
+
+target_link_libraries(test-imagenet crystalnet)
+target_link_libraries(test-imagenet stdc++fs)
+# apt install -y libopencv-dev
+target_link_libraries(test-imagenet opencv_core opencv_imgproc opencv_highgui opencv_imgcodecs) 
