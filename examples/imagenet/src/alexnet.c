@@ -2,7 +2,8 @@
 
 #include <crystalnet-ext.h>
 
-typedef shape_t const *p_shape_t;
+#include "alexnet.h"
+
 // https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
 s_model_t *alexnet(const shape_t *image_shape, uint32_t arity)
 {

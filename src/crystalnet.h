@@ -102,7 +102,8 @@ extern dataset_t *load_mnist(const char *const); // train | t10k
 extern dataset_t *load_cifar();
 
 // unstable APIs
-extern tensor_t *_load_idx_file(const char *filename);
+extern tensor_t *_load_idx_file(const char *);
+extern void _idx_file_info(const char *);
 extern void s_experiment(s_trainer_t *, dataset_t *, dataset_t *, uint32_t);
 
 // eager APIs

@@ -8,11 +8,8 @@ set(INSTALL_PREFIX $ENV{HOME}/local/crystalnet)  # make it configurable
 include_directories(${INSTALL_PREFIX}/include)
 link_directories(${INSTALL_PREFIX}/lib)
 
-
-add_executable(alexnet src/alexnet-main.c src/alexnet.c)
-target_link_libraries(alexnet crystalnet)
-
-add_executable(test-imagenet src/test-imagenet.cpp src/alexnet.c src/imagenet.cpp)
+file(GLOB srcs src/*.cpp src/*.c)
+add_executable(test-imagenet ${srcs})
 
 target_link_libraries(test-imagenet crystalnet)
 target_link_libraries(test-imagenet stdc++fs)

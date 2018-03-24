@@ -26,6 +26,12 @@ struct classifier_t {
           model(realize(&p_ctx, s_model.get(), 1)) // TODO: support batch
     {
         // TODO: load weight to p_ctx
+        p_ctx.debug();
+    }
+
+    void load(const std::string &name, const tensor_ref_t &r) const
+    {
+        p_ctx.load(name, r);
     }
 
     uint32_t most_likely(const tensor_ref_t &input) const
@@ -38,13 +44,19 @@ struct classifier_t {
     }
 };
 
-const classifier_t *new_classifier(classification_model_func_t model,
-                                   const shape_t *shape, uint32_t class_number)
+classifier_t *new_classifier(classification_model_func_t model,
+                             const shape_t *shape, uint32_t class_number)
 {
     return new classifier_t(model, *shape, class_number);
 }
 
 void del_classifier(const classifier_t *classifier) { delete classifier; }
+
+void classifier_load(const classifier_t *classifier, const char *name,
+                     const tensor_ref_t *r)
+{
+    classifier->load(name, *r);
+}
 
 uint32_t most_likely(const classifier_t *c, const tensor_ref_t *input)
 {

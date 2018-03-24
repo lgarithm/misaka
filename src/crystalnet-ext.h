@@ -46,9 +46,11 @@ extern dataset_t *new_fake_dataset(const shape_t *, uint32_t);
 // high level export APIs
 typedef s_model_t *(classification_model_func_t)(const shape_t *, uint32_t);
 typedef struct classifier_t classifier_t;
-extern const classifier_t *new_classifier(classification_model_func_t,
-                                          const shape_t *, uint32_t);
+extern classifier_t *new_classifier(classification_model_func_t,
+                                    const shape_t *, uint32_t);
 extern void del_classifier(const classifier_t *);
+extern void classifier_load(const classifier_t *, const char *,
+                            const tensor_ref_t *);
 extern uint32_t most_likely(const classifier_t *, const tensor_ref_t *);
 
 #ifdef __cplusplus
