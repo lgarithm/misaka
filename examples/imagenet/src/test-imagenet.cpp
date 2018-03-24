@@ -17,7 +17,7 @@ const std::string home(std::getenv("HOME"));
 const std::string data_dir = home + "/var/data/imagenet/ILSVRC/val";
 const std::string model_dir = home + "/var/models/vgg16";
 
-bool endwith(const std::string &str, const std::string suffix)
+bool endwith(const std::string &str, const std::string &suffix)
 {
     if (str.size() < suffix.size()) {
         return false;

@@ -23,7 +23,7 @@ def idx_type(np_type):
         return 0xd
     elif np_type == np.float64:
         return 0xe
-    assert (False)
+    raise ValueError('unsupported dtype %s' % np_type)
 
 
 def write_idx_header(f, a):

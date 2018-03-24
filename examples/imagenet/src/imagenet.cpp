@@ -21,7 +21,7 @@ void info(const cv::Mat &img, const std::string &name)
 struct square_normalizer {
     const int r;
 
-    square_normalizer(const int r) : r(r) {}
+    explicit square_normalizer(const int r) : r(r) {}
 
     cv::Mat operator()(const cv::Mat &img) const
     {
@@ -57,4 +57,3 @@ std::size_t to_hwc(const cv::Mat &img, void *tensor)
     memcpy(tensor, img.data, len);
     return len;
 }
-
