@@ -52,6 +52,8 @@ extern void del_classifier(const classifier_t *);
 extern void classifier_load(const classifier_t *, const char *,
                             const tensor_ref_t *);
 extern uint32_t most_likely(const classifier_t *, const tensor_ref_t *);
+extern void top_likely(const classifier_t *, const tensor_ref_t *, uint32_t,
+                       int32_t *);
 
 #ifdef __cplusplus
 }

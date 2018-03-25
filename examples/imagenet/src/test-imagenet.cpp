@@ -16,6 +16,9 @@ namespace fs = std::experimental::filesystem;
 const std::string home(std::getenv("HOME"));
 const std::string data_dir = home + "/var/data/imagenet/ILSVRC/val";
 const std::string model_dir = home + "/var/models/vgg16";
+const std::string
+    test_image_url("https://www.cs.toronto.edu/~frossard/vgg16/laska.png");
+const std::string test_image_path = home + "/var/models/vgg16/laska.png";
 
 bool endwith(const std::string &str, const std::string &suffix)
 {
@@ -83,6 +86,20 @@ void load_weight(classifier_t *classifier)
     }
 }
 
+void preprocess(const fs::path &p, const tensor_ref_t *input_image)
+{
+    const auto image = cv::imread(p.c_str());
+    const auto input = square_normalize(image, vgg16_image_size);
+    cv::imwrite("input.bmp", input);
+    const auto dim = to_hwc(input, tensor_data_ptr(input_image));
+    assert(dim == shape_dim(tensor_shape(input_image)));
+    using T = float;
+    T *data = (T *)tensor_data_ptr(input_image);
+    for (auto i = 0; i < dim; ++i) {
+        data[i] /= 255.0;
+    }
+}
+
 void run()
 {
     const shape_t *input_shape =
@@ -93,16 +110,23 @@ void run()
         new_classifier(vgg16, input_shape, vgg16_class_number);
     load_weight(classifier);
 
+    preprocess(fs::path(test_image_path), input_image);
+    const int k = 5;
+    int results[k];
+    top_likely(classifier, input_image, k, results);
+    for (int i = 0; i < k; ++i) {
+        std::cout << results[i] << std::endl;
+    }
+
+    /*
     for (const auto &f : fs::directory_iterator(fs::path(data_dir))) {
         std::cout << f << std::endl;
-        const auto image = cv::imread(f.path().c_str());
-        const auto input = square_normalize(image, vgg16_image_size);
-        const auto dim = to_hwc(input, tensor_data_ptr(input_image));
-        assert(dim == shape_dim(tensor_shape(input_image)));
+        preprocess(f.path(), input_image);
         const uint32_t result = most_likely(classifier, input_image);
         std::cout << "result: " << result
                   << std::endl; // TODO: output class name
     }
+    */
 
     del_classifier(classifier);
     del_tensor_ref(input_image);

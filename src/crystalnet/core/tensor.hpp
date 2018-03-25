@@ -144,7 +144,20 @@ template <typename R, uint8_t r> struct ranked_tensor_ref_t {
         : shape(shape), data(data)
     {
     }
+
     void fill(R x) const { std::fill(data, data + shape.dim(), x); }
+
+    ranked_tensor_ref_t<R, r - 1> operator[](uint32_t idx) const
+    {
+        static_assert(r > 0);
+        check(idx < shape.dims[0]);
+        const shape_t _new_shape(
+            std::vector<uint32_t>(shape.dims.begin() + 1, shape.dims.end()));
+        const auto new_shape = ranked<r - 1>(_new_shape);
+        return ranked_tensor_ref_t<R, r - 1>(new_shape,
+                                             data + idx * new_shape.dim());
+    }
+
     template <typename... I> R &at(I... i) const
     {
         return data[shape.idx(i...)];
