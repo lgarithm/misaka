@@ -1,5 +1,6 @@
 #include <crystalnet-internal.h>
 #include <crystalnet/core/gc.hpp>
+#include <crystalnet/core/tracer.hpp>
 #include <crystalnet/model/model.hpp>
 #include <crystalnet/symbol/model.hpp>
 #include <crystalnet/symbol/node.hpp>
@@ -43,6 +44,7 @@ void del_s_model(s_model_t *model) { delete model; }
 model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
                  uint32_t batch_size)
 {
+    TRACE(__func__);
     static GC<model_ctx_t> gc;
     printf("[D] realising s_model_t\n");
     model_option_t opt(m->input->name, batch_size);

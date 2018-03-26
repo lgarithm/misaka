@@ -3,6 +3,7 @@
 #include <crystalnet-ext.h>
 #include <crystalnet-internal.h>
 #include <crystalnet/core/tensor.hpp>
+#include <crystalnet/core/tracer.hpp>
 #include <crystalnet/ops/argmax.hpp>
 #include <crystalnet/ops/batch.hpp>
 #include <crystalnet/symbol/model.hpp>
@@ -38,7 +39,7 @@ struct classifier_t {
     {
         k = std::min(k, class_number);
         model->input->bind(embed(input));
-        model->output->forward();
+        TRACE_IT(model->output->forward());
         using T = float;
         const auto output = ranked<2, T>(model->output->value());
         tensor_t _indexes(shape_t(k), idx_type<int32_t>::type);

@@ -41,7 +41,6 @@ extern tracer_ctx_t default_tracer_ctx;
         e;                                                                     \
     }
 
-#define TRACE_IT(e) _TRACE_WITH_NAMD(#e, default_tracer_ctx);
+#define TRACE_IT(e) _TRACE_WITH_NAMD(#e, e);
 
-#define TRACE_NAME(name, e)                                                    \
-    _TRACE_WITH_NAMD(std::string(#e "::") + name, default_tracer_ctx);
+#define TRACE_NAME(name, e) _TRACE_WITH_NAMD(std::string(#e "::") + name, e);
