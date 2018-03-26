@@ -75,10 +75,8 @@ void load_weight(classifier_t *classifier)
             fprintf(stderr, "[e] %s.idx not exist.", name.c_str());
             exit(1);
         }
-        const tensor_ref_t *r = new_tensor_ref(w);
         const std::string name1 = "param" + std::to_string(i++);
-        classifier_load(classifier, name1.c_str(), r);
-        del_tensor_ref(r);
+        classifier_load(classifier, name1.c_str(), tensor_ref(w));
         printf("[i] %s <- %s\n", name1.c_str(), name.c_str());
     }
     for (const auto[k, v] : weights) {
@@ -90,30 +88,32 @@ void preprocess(const fs::path &p, const tensor_ref_t *input_image)
 {
     const auto image = cv::imread(p.c_str());
     const auto input = square_normalize(image, vgg16_image_size);
-    cv::imwrite("input.bmp", input);
-    const auto dim = to_hwc(input, tensor_data_ptr(input_image));
+    // cv::imwrite("input.bmp", input);
+    const tensor_t *_tmp = new_tensor(tensor_shape(input_image), dtypes.u8);
+    const auto dim = to_hwc(input, tensor_ref(_tmp));
     assert(dim == shape_dim(tensor_shape(input_image)));
     using T = float;
     T *data = (T *)tensor_data_ptr(input_image);
+    uint8_t *tmp = (uint8_t *)tensor_data_ptr(tensor_ref(_tmp));
     for (auto i = 0; i < dim; ++i) {
-        data[i] /= 255.0;
+        data[i] = tmp[i] / 255.0;
     }
+    del_tensor(_tmp);
 }
 
 void run()
 {
     const shape_t *input_shape =
         new_shape(3, vgg16_image_size, vgg16_image_size, 3);
-    const tensor_t *_input_image = new_tensor(input_shape, dtypes.f32);
-    const tensor_ref_t *input_image = new_tensor_ref(_input_image);
+    const tensor_t *input_image = new_tensor(input_shape, dtypes.f32);
     classifier_t *classifier =
         new_classifier(vgg16, input_shape, vgg16_class_number);
     load_weight(classifier);
 
-    preprocess(fs::path(test_image_path), input_image);
+    preprocess(fs::path(test_image_path), tensor_ref(input_image));
     const int k = 5;
     int results[k];
-    top_likely(classifier, input_image, k, results);
+    top_likely(classifier, tensor_ref(input_image), k, results);
     for (int i = 0; i < k; ++i) {
         std::cout << results[i] << std::endl;
     }
@@ -129,8 +129,7 @@ void run()
     */
 
     del_classifier(classifier);
-    del_tensor_ref(input_image);
-    del_tensor(_input_image);
+    del_tensor(input_image);
     del_shape(input_shape);
 }
 

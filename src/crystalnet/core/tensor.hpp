@@ -21,30 +21,11 @@ struct _tensor_meta_t {
     }
 };
 
-struct tensor_t : _tensor_meta_t {
-    const std::unique_ptr<uint8_t[]> _data;
-    void *const data;
-
-    explicit tensor_t(const shape_t &shape,
-                      uint8_t dtype = idx_type<float>::type)
-        : _tensor_meta_t(dtype, shape),
-          _data(new uint8_t[dtype_size(dtype) * shape.dim()]), data(_data.get())
-    {
-        // LOG_TENSOR_USAGE(shape, dtype_size(dtype));
-        memset(data, 0, dtype_size(dtype) * shape.dim());
-    }
-};
-
 struct tensor_ref_t : _tensor_meta_t {
     void *const data;
 
     tensor_ref_t(const shape_t &shape, uint8_t dtype, void *data)
         : _tensor_meta_t(dtype, shape), data(data)
-    {
-    }
-
-    explicit tensor_ref_t(const tensor_t &tensor)
-        : _tensor_meta_t(tensor.dtype, tensor.shape), data(tensor.data)
     {
     }
 
@@ -75,6 +56,17 @@ struct tensor_ref_t : _tensor_meta_t {
     }
 };
 
+struct tensor_t : _tensor_meta_t {
+    const std::unique_ptr<uint8_t[]> _data;
+    void *const data;
+    const tensor_ref_t self;
+
+    explicit tensor_t(const shape_t &shape,
+                      uint8_t dtype = idx_type<float>::type);
+};
+
+tensor_ref_t ref(const tensor_t &);
+
 struct tensor_ref_list_t {
     const std::vector<tensor_ref_t> _args;
     explicit tensor_ref_list_t(const std::vector<tensor_ref_t> &args)
@@ -92,8 +84,6 @@ struct tensor_ref_list_t {
         return shape_list_t(shapes);
     }
 };
-
-inline tensor_ref_t ref(const tensor_t &tensor) { return tensor_ref_t(tensor); }
 
 template <typename R> struct r_tensor_ref_t {
     const shape_t shape;

@@ -146,7 +146,6 @@ struct operator_node_t : node_t {
         if (op.backward) {
             tensor_ref_list_t input = _input_refs();
             tensor_ref_list_t input_grads = _input_grad_refs();
-            tensor_ref_t grad(_gradient);
 
             backward_ctx_t ctx(_input_refs(), ref(_value), _input_grad_refs(),
                                ref(_gradient));

@@ -29,8 +29,7 @@ struct parameter_ctx_t {
             printf("[W] %s: no parameter named %s\n", __func__, name.c_str());
             return;
         }
-        const tensor_ref_t value(*pos->second);
-        value.copy_from(r);
+        ref(*pos->second).copy_from(r);
     }
 
     void debug() const

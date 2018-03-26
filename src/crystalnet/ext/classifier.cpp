@@ -37,10 +37,12 @@ struct classifier_t {
 
     std::vector<int32_t> top_likely(const tensor_ref_t &input, uint32_t k) const
     {
+        using T = float;
         k = std::min(k, class_number);
         model->input->bind(embed(input));
+        print(r_tensor_ref_t<T>(model->input->value()));
         TRACE_IT(model->output->forward());
-        using T = float;
+        model->ctx->debug();
         const auto output = ranked<2, T>(model->output->value());
         tensor_t _indexes(shape_t(k), idx_type<int32_t>::type);
         const auto indexes = ranked<1, int32_t>(ref(_indexes));
