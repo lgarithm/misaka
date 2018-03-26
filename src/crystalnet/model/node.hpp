@@ -4,11 +4,11 @@
 #include <vector>
 
 #include <crystalnet.h>
-#include <crystalnet/core/debug.hpp>
 #include <crystalnet/core/error.hpp>
 #include <crystalnet/core/operator.hpp>
 #include <crystalnet/core/shape.hpp>
 #include <crystalnet/core/tensor.hpp>
+#include <crystalnet/core/tracer.hpp>
 
 struct node_t {
     const std::string name;
@@ -136,7 +136,7 @@ struct operator_node_t : node_t {
         // TODO: op.forward must be present
         if (op.forward) {
             forward_ctx_t ctx(_input_refs(), ref(_value));
-            (*op.forward)(ctx);
+            TRACE_NAME(op.name, (*op.forward)(ctx));
         }
     }
 
@@ -150,7 +150,7 @@ struct operator_node_t : node_t {
 
             backward_ctx_t ctx(_input_refs(), ref(_value), _input_grad_refs(),
                                ref(_gradient));
-            (*op.backward)(ctx);
+            TRACE_NAME(op.name, (*op.backward)(ctx));
         }
         for (auto i : inputs) {
             i->backward();

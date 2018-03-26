@@ -52,9 +52,9 @@ struct s_trainer_t {
             printf("[D] begin step %u\n", step);
             m->input->bind(images);
             label->bind(label_s);
-            loss->forward();
+            TRACE_IT(loss->forward());
             r_tensor_ref_t<float>(loss->gradient()).fill_uni();
-            loss->backward();
+            TRACE_IT(loss->backward());
             (*optimize)();
             m->ctx->debug();
             printf("train step: %u\n", step);
@@ -67,6 +67,7 @@ struct s_trainer_t {
 
     std::pair<uint32_t, uint32_t> test(dataset_t &ds)
     {
+        TRACE(__func__);
         const auto batch_size = 1000;
         uint32_t no = 0;
         uint32_t yes = 0;
@@ -76,7 +77,7 @@ struct s_trainer_t {
         for (auto[images, label_s] : batch(ds, batch_size)) {
             ++step;
             m->input->bind(images);
-            m->output->forward();
+            TRACE_IT(m->output->forward());
             using T = float;
             for (auto i : range(batch_size)) {
                 auto p = argmax(r_tensor_ref_t<T>(label_s[i]));

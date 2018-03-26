@@ -8,7 +8,6 @@
 #include <vector>
 
 #include <crystalnet.h>
-#include <crystalnet/core/debug.hpp>
 #include <crystalnet/core/error.hpp>
 #include <crystalnet/core/idx.hpp>
 #include <crystalnet/core/shape.hpp>
@@ -31,7 +30,7 @@ struct tensor_t : _tensor_meta_t {
         : _tensor_meta_t(dtype, shape),
           _data(new uint8_t[dtype_size(dtype) * shape.dim()]), data(_data.get())
     {
-        LOG_TENSOR_USAGE(shape, dtype_size(dtype));
+        // LOG_TENSOR_USAGE(shape, dtype_size(dtype));
         memset(data, 0, dtype_size(dtype) * shape.dim());
     }
 };
@@ -147,7 +146,7 @@ template <typename R, uint8_t r> struct ranked_tensor_ref_t {
 
     void fill(R x) const { std::fill(data, data + shape.dim(), x); }
 
-    ranked_tensor_ref_t<R, r - 1> operator[](uint32_t idx) const
+    auto operator[](uint32_t idx) const
     {
         static_assert(r > 0);
         check(idx < shape.dims[0]);
