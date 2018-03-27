@@ -58,29 +58,14 @@ void load_weight(classifier_t *classifier)
         "fc8_W",     "fc8_b",     //
     });
 
-    std::map<std::string, const tensor_t *> weights;
-    for (const auto &f : fs::directory_iterator(fs::path(model_dir))) {
-        if (!endwith(f.path().c_str(), ".idx")) {
-            continue;
-        }
-        std::cout << f << std::endl;
-        _idx_file_info(f.path().c_str());
-        weights[basename(f.path())] = _load_idx_file(f.path().c_str());
-    }
-
     uint32_t i = 0;
     for (const auto &name : names) {
-        const tensor_t *w = weights[name + ".idx"];
-        if (w == nullptr) {
-            fprintf(stderr, "[e] %s.idx not exist.", name.c_str());
-            exit(1);
-        }
-        const std::string name1 = "param" + std::to_string(i++);
-        classifier_load(classifier, name1.c_str(), tensor_ref(w));
-        printf("[i] %s <- %s\n", name1.c_str(), name.c_str());
-    }
-    for (const auto[k, v] : weights) {
-        del_tensor(v);
+        const auto filename = model_dir + "/" + name + ".idx";
+        const auto param_name = "param" + std::to_string(i++);
+        const auto w = _load_idx_file(filename.c_str());
+        classifier_load(classifier, param_name.c_str(), tensor_ref(w));
+        printf("[i] %s <- %s\n", param_name.c_str(), filename.c_str());
+        del_tensor(w);
     }
 }
 
@@ -95,8 +80,9 @@ void preprocess(const fs::path &p, const tensor_ref_t *input_image)
     using T = float;
     T *data = (T *)tensor_data_ptr(input_image);
     uint8_t *tmp = (uint8_t *)tensor_data_ptr(tensor_ref(_tmp));
+    const T mean[3] = {123.68, 116.779, 103.939};
     for (auto i = 0; i < dim; ++i) {
-        data[i] = tmp[i] / 255.0;
+        data[i] = (tmp[i] - mean[i % 3]) / 255.0;
     }
     del_tensor(_tmp);
 }
@@ -138,3 +124,19 @@ int main()
     run();
     return 0;
 }
+
+/*
+The output of tensorlayer is
+356 weasel 0.69338596
+358 polecat, fitch, foulmart, foumart, Mustela putorius 0.17538767
+357 mink 0.12208586
+359 black-footed ferret, ferret, Mustela nigripes 0.008870664
+360 otter 0.000121083285
+
+our output is:
+669
+356
+279
+359
+999
+*/

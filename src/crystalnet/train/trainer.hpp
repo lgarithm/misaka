@@ -3,6 +3,7 @@
 
 #include <crystalnet-internal.h>
 #include <crystalnet/data/dataset.hpp>
+#include <crystalnet/debug/debug.hpp>
 #include <crystalnet/model/model.hpp>
 #include <crystalnet/ops/argmax.hpp>
 #include <crystalnet/train/optimizer.hpp>
@@ -56,7 +57,7 @@ struct s_trainer_t {
             r_tensor_ref_t<float>(loss->gradient()).fill_uni();
             TRACE_IT(loss->backward());
             (*optimize)();
-            m->ctx->debug();
+            debug(*m);
             printf("train step: %u\n", step);
             if (test_ds) {
                 const auto[yes, tot] = test(*test_ds);

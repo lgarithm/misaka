@@ -4,6 +4,7 @@
 #include <crystalnet-internal.h>
 #include <crystalnet/core/tensor.hpp>
 #include <crystalnet/core/tracer.hpp>
+#include <crystalnet/debug/debug.hpp>
 #include <crystalnet/ops/argmax.hpp>
 #include <crystalnet/ops/batch.hpp>
 #include <crystalnet/symbol/model.hpp>
@@ -27,7 +28,6 @@ struct classifier_t {
           s_model(func(&image_shape, class_number)),
           model(realize(&p_ctx, s_model.get(), 1)) // TODO: support batch
     {
-        p_ctx.debug();
     }
 
     void load(const std::string &name, const tensor_ref_t &r) const
@@ -42,7 +42,7 @@ struct classifier_t {
         model->input->bind(embed(input));
         print(r_tensor_ref_t<T>(model->input->value()));
         TRACE_IT(model->output->forward());
-        model->ctx->debug();
+        debug(*model);
         const auto output = ranked<2, T>(model->output->value());
         tensor_t _indexes(shape_t(k), idx_type<int32_t>::type);
         const auto indexes = ranked<1, int32_t>(ref(_indexes));

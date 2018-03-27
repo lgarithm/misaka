@@ -41,41 +41,6 @@ struct model_ctx_t {
     {
         return gc(new wrap_node_t(name, shape, node));
     }
-
-    void print_parameters() const
-    {
-        printf("parameters:\n");
-        using T = float;
-        for (auto p : params.items) {
-            r_tensor_ref_t<T> r(p->value());
-            r_tensor_ref_t<T> s(p->gradient());
-            printf("%-16s: ", p->name.c_str());
-            print(r);
-            printf("%-16s: ", p->name.c_str());
-            print(s);
-        }
-    }
-
-    void print_opertors() const
-    {
-        printf("operators:\n");
-        using T = float;
-        for (auto o : ops.items) {
-            r_tensor_ref_t<T> r(o->value());
-            r_tensor_ref_t<T> s(o->gradient());
-            printf("%-16s: ", o->name.c_str());
-            print(r);
-            printf("%-16s: ", o->name.c_str());
-            print(s);
-        }
-    }
-
-    void debug() const
-    {
-        printf("debug:\n");
-        print_parameters();
-        print_opertors();
-    }
 };
 
 struct model_t {
