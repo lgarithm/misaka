@@ -40,7 +40,6 @@ struct classifier_t {
         using T = float;
         k = std::min(k, class_number);
         model->input->bind(embed(input));
-        print(r_tensor_ref_t<T>(model->input->value()));
         TRACE_IT(model->output->forward());
         debug(*model);
         const auto output = ranked<2, T>(model->output->value());

@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <experimental/filesystem>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -13,28 +14,23 @@
 
 namespace fs = std::experimental::filesystem;
 
-const std::string home(std::getenv("HOME"));
-const std::string data_dir = home + "/var/data/imagenet/ILSVRC/val";
-const std::string model_dir = home + "/var/models/vgg16";
+const auto home = fs::path(std::getenv("HOME"));
+const auto data_dir = home / "var/data/imagenet/ILSVRC/val";
+const auto model_dir = home / "var/models/vgg16";
 const std::string
     test_image_url("https://www.cs.toronto.edu/~frossard/vgg16/laska.png");
-const std::string test_image_path = home + "/var/models/vgg16/laska.png";
+const auto test_image_path = home / "var/models/vgg16/laska.png";
 
-bool endwith(const std::string &str, const std::string &suffix)
+auto load_class_names()
 {
-    if (str.size() < suffix.size()) {
-        return false;
+    const auto filename = model_dir / "vgg16-class-names.txt";
+    std::vector<std::string> names;
+    std::string line;
+    std::ifstream in(filename);
+    while (std::getline(in, line)) {
+        names.push_back(line);
     }
-    return std::string(str.end() - suffix.size(), str.end()) == suffix;
-}
-
-std::string basename(const fs::path &p)
-{
-    std::string name;
-    for (const auto &it : p) {
-        name = it;
-    }
-    return name;
+    return names;
 }
 
 void load_weight(classifier_t *classifier)
@@ -60,7 +56,7 @@ void load_weight(classifier_t *classifier)
 
     uint32_t i = 0;
     for (const auto &name : names) {
-        const auto filename = model_dir + "/" + name + ".idx";
+        const auto filename = model_dir / (name + ".idx");
         const auto param_name = "param" + std::to_string(i++);
         const auto w = _load_idx_file(filename.c_str());
         classifier_load(classifier, param_name.c_str(), tensor_ref(w));
@@ -82,13 +78,15 @@ void preprocess(const fs::path &p, const tensor_ref_t *input_image)
     uint8_t *tmp = (uint8_t *)tensor_data_ptr(tensor_ref(_tmp));
     const T mean[3] = {123.68, 116.779, 103.939};
     for (auto i = 0; i < dim; ++i) {
-        data[i] = (tmp[i] - mean[i % 3]) / 255.0;
+        data[i] = (tmp[i] - mean[i % 3]); // / 255.0;
     }
     del_tensor(_tmp);
 }
 
 void run()
 {
+    const auto names = load_class_names();
+
     const shape_t *input_shape =
         new_shape(3, vgg16_image_size, vgg16_image_size, 3);
     const tensor_t *input_image = new_tensor(input_shape, dtypes.f32);
@@ -96,12 +94,13 @@ void run()
         new_classifier(vgg16, input_shape, vgg16_class_number);
     load_weight(classifier);
 
-    preprocess(fs::path(test_image_path), tensor_ref(input_image));
+    preprocess(test_image_path, tensor_ref(input_image));
+    debug_tensor("input", tensor_ref(input_image));
     const int k = 5;
     int results[k];
     top_likely(classifier, tensor_ref(input_image), k, results);
     for (int i = 0; i < k; ++i) {
-        std::cout << results[i] << std::endl;
+        printf("%-8d %s\n", results[i], names[results[i]].c_str());
     }
 
     /*
@@ -134,9 +133,9 @@ The output of tensorlayer is
 360 otter 0.000121083285
 
 our output is:
-669
-356
-279
-359
-999
+357      mink
+356      weasel
+358      polecat, fitch, foulmart, foumart, Mustela putorius
+359      black-footed ferret, ferret, Mustela nigripes
+298      mongoose
 */

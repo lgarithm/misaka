@@ -1,3 +1,4 @@
+#include <crystalnet-ext.h>
 #include <crystalnet-internal.h>
 #include <crystalnet/debug/debug.hpp>
 #include <crystalnet/model/model.hpp>
@@ -9,6 +10,8 @@ void debug(const std::string &name, const tensor_ref_t &t)
     printf("%-32s: ", name.c_str());
     print(r);
 }
+
+void debug_tensor(const char *name, const tensor_ref_t *t) { debug(name, *t); }
 
 void debug(const node_t &n)
 {
