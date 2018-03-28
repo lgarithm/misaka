@@ -78,9 +78,23 @@ void preprocess(const fs::path &p, const tensor_ref_t *input_image)
     uint8_t *tmp = (uint8_t *)tensor_data_ptr(tensor_ref(_tmp));
     const T mean[3] = {123.68, 116.779, 103.939};
     for (auto i = 0; i < dim; ++i) {
-        data[i] = (tmp[i] - mean[i % 3]); // / 255.0;
+        data[i] = tmp[i] - mean[i % 3];
     }
     del_tensor(_tmp);
+}
+
+const tensor_t *load_test_image(const fs::path &p)
+{
+    const auto _image = _load_idx_file(p.c_str());
+    const auto image = tensor_ref(_image);
+    const auto dim = shape_dim(tensor_shape(image));
+    using T = float;
+    T *data = (T *)tensor_data_ptr(image);
+    const T mean[3] = {123.68, 116.779, 103.939};
+    for (auto i = 0; i < dim; ++i) {
+        data[i] -= mean[i % 3];
+    }
+    return _image;
 }
 
 void run()
@@ -89,12 +103,14 @@ void run()
 
     const shape_t *input_shape =
         new_shape(3, vgg16_image_size, vgg16_image_size, 3);
-    const tensor_t *input_image = new_tensor(input_shape, dtypes.f32);
+    // const tensor_t *input_image = new_tensor(input_shape, dtypes.f32);
     classifier_t *classifier =
         new_classifier(vgg16, input_shape, vgg16_class_number);
     load_weight(classifier);
 
-    preprocess(test_image_path, tensor_ref(input_image));
+    // preprocess(test_image_path, tensor_ref(input_image));
+    const tensor_t *input_image =
+        load_test_image(home / "var/models/vgg16/laska.idx");
     debug_tensor("input", tensor_ref(input_image));
     const int k = 5;
     int results[k];
@@ -123,19 +139,3 @@ int main()
     run();
     return 0;
 }
-
-/*
-The output of tensorlayer is
-356 weasel 0.69338596
-358 polecat, fitch, foulmart, foumart, Mustela putorius 0.17538767
-357 mink 0.12208586
-359 black-footed ferret, ferret, Mustela nigripes 0.008870664
-360 otter 0.000121083285
-
-our output is:
-357      mink
-356      weasel
-358      polecat, fitch, foulmart, foumart, Mustela putorius
-359      black-footed ferret, ferret, Mustela nigripes
-298      mongoose
-*/

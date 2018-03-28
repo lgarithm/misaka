@@ -65,6 +65,7 @@ struct placeholder_node_t : node_t {
     void bind(const tensor_ref_t &r) override
     {
         check(r.dtype == dtype);
+        check(r.shape == shape);
         _value.reset(new tensor_ref_t(r));
     }
 

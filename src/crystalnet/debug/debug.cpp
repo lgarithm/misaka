@@ -11,7 +11,12 @@ void debug(const std::string &name, const tensor_ref_t &t)
     print(r);
 }
 
-void debug_tensor(const char *name, const tensor_ref_t *t) { debug(name, *t); }
+void debug_tensor(const char *name, const tensor_ref_t *t)
+{
+    printf("%-32s: %s %s\n", name, std::to_string(*t).c_str(),
+           // TODO: support all types
+           summary(r_tensor_ref_t<float>(*t)).c_str());
+}
 
 void debug(const node_t &n)
 {
