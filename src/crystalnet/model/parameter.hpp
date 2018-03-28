@@ -31,12 +31,4 @@ struct parameter_ctx_t {
         }
         ref(*pos->second).copy_from(r);
     }
-
-    void debug() const
-    {
-        for (const auto[name, t] : items) {
-            printf("[d] %s %s\n", name.c_str(),
-                   std::to_string(t->shape).c_str());
-        }
-    }
 };

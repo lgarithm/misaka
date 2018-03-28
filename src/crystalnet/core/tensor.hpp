@@ -198,8 +198,15 @@ inline string to_string(const tensor_ref_t &t)
 }
 }
 
+template <typename T> std::string summary(const r_tensor_ref_t<T> &r)
+{
+    constexpr const char *const fmt = "min: %12f    meam: %12f    max: %12f";
+    char line[256];
+    sprintf(line, fmt, r.min(), r.mean(), r.max());
+    return line;
+}
+
 template <typename T> void print(const r_tensor_ref_t<T> &r)
 {
-    constexpr const char *const fmt = "min: %12f    meam: %12f    max: %12f\n";
-    printf(fmt, r.min(), r.mean(), r.max());
+    printf("%s\n", summary(r).c_str());
 }

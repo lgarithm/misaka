@@ -21,11 +21,8 @@ s_node_t *covar(s_model_ctx_t *ctx, const shape_t *shape)
 
 s_node_t *apply(s_model_ctx_t *ctx, const operator_t *op, s_node_t *args[])
 {
-    std::vector<s_node_t *> nodes;
-    for (auto i = 0; i < op->arity; ++i) {
-        nodes.push_back(args[i]);
-    }
-    return ctx->make_operator(*op, nodes);
+    return ctx->make_operator(*op,
+                              std::vector<s_node_t *>(args, args + op->arity));
 }
 
 s_node_t *reshape(s_model_ctx_t *ctx, const shape_t *shape,
@@ -56,7 +53,6 @@ model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
         printf("exact one placeholder must be specified!\n");
         check(false);
     }
-    auto inputs = places[0];
     printf("[D] realized s_model_t\n");
-    return new model_t(ctx, inputs, output);
+    return new model_t(ctx, places[0], output);
 }

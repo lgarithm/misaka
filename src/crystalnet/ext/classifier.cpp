@@ -4,6 +4,7 @@
 #include <crystalnet-internal.h>
 #include <crystalnet/core/tensor.hpp>
 #include <crystalnet/core/tracer.hpp>
+#include <crystalnet/debug/debug.hpp>
 #include <crystalnet/ops/argmax.hpp>
 #include <crystalnet/ops/batch.hpp>
 #include <crystalnet/symbol/model.hpp>
@@ -27,7 +28,6 @@ struct classifier_t {
           s_model(func(&image_shape, class_number)),
           model(realize(&p_ctx, s_model.get(), 1)) // TODO: support batch
     {
-        p_ctx.debug();
     }
 
     void load(const std::string &name, const tensor_ref_t &r) const
@@ -37,25 +37,28 @@ struct classifier_t {
 
     std::vector<int32_t> top_likely(const tensor_ref_t &input, uint32_t k) const
     {
+        TRACE(__func__);
         using T = float;
         k = std::min(k, class_number);
         model->input->bind(embed(input));
-        print(r_tensor_ref_t<T>(model->input->value()));
         TRACE_IT(model->output->forward());
-        model->ctx->debug();
+        TRACE_IT(debug(*model));
         const auto output = ranked<2, T>(model->output->value());
         tensor_t _indexes(shape_t(k), idx_type<int32_t>::type);
         const auto indexes = ranked<1, int32_t>(ref(_indexes));
         top_indexes(output[0], indexes);
         std::vector<int32_t> result;
         for (auto i : range(k)) {
-            result.push_back(indexes.data[i]);
+            const auto idx = indexes.data[i];
+            printf("[d] %d %f\n", idx, output[0].data[idx]);
+            result.push_back(idx);
         }
         return result;
     }
 
     uint32_t most_likely(const tensor_ref_t &input) const
     {
+        TRACE(__func__);
         model->input->bind(embed(input));
         model->output->forward();
         using T = float;

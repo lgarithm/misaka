@@ -65,6 +65,7 @@ struct placeholder_node_t : node_t {
     void bind(const tensor_ref_t &r) override
     {
         check(r.dtype == dtype);
+        check(r.shape == shape);
         _value.reset(new tensor_ref_t(r));
     }
 
@@ -78,23 +79,14 @@ struct operator_node_t : node_t {
     static shape_t infer_shape(const operator_t &op, node_t *nodes[])
     {
         std::vector<shape_t> shapes;
-        std::string sig;
         for (auto i = 0; i < op.arity; ++i) {
             shapes.push_back(nodes[i]->shape);
-            if (sig.size() > 0) {
-                sig += ", ";
-            }
-            sig += std::to_string(nodes[i]->shape);
         }
-        auto out_shape = (*op.infer)(shape_list_t(shapes));
-        printf("[D] %s <- %s (%s)\n", std::to_string(out_shape).c_str(),
-               sig.c_str(), op.name.c_str());
-        return out_shape;
+        return (*op.infer)(shape_list_t(shapes));
     }
 
     using input_list_t = std::vector<node_t *>;
-    input_list_t inputs;
-
+    const input_list_t inputs;
     const operator_t &op;
     tensor_t _value;
     tensor_t _gradient;
