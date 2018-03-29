@@ -76,7 +76,7 @@ struct placeholder_node_t : node_t {
 };
 
 struct operator_node_t : node_t {
-    static shape_t infer_shape(const operator_t &op, node_t *nodes[])
+    static shape_t infer_shape(const operator_t &op, const node_t *nodes[])
     {
         std::vector<shape_t> shapes;
         for (auto i = 0; i < op.arity; ++i) {
@@ -85,14 +85,14 @@ struct operator_node_t : node_t {
         return (*op.infer)(shape_list_t(shapes));
     }
 
-    using input_list_t = std::vector<node_t *>;
+    using input_list_t = std::vector<const node_t *>;
     const input_list_t inputs;
     const operator_t &op;
     tensor_t _value;
     tensor_t _gradient;
 
     operator_node_t(const std::string &name, const operator_t &op,
-                    node_t *inputs[])
+                    const node_t *inputs[])
         : node_t(name, infer_shape(op, inputs)),
           inputs(input_list_t(inputs, inputs + op.arity)), op(op),
           _value(this->shape), _gradient(this->shape)

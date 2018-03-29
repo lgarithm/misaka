@@ -33,7 +33,7 @@ s_node_t *reshape(s_model_ctx_t *ctx, const shape_t *shape,
 
 s_model_t *new_s_model(s_model_ctx_t *ctx, s_node_t *input, s_node_t *output)
 {
-    return new s_model_t(ctx, input, output);
+    return new s_model_t(*ctx, *input, *output);
 }
 
 void del_s_model(s_model_t *model) { delete model; }
@@ -44,9 +44,9 @@ model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
     TRACE(__func__);
     static GC<model_ctx_t> gc;
     printf("[D] realising s_model_t\n");
-    model_option_t opt(m->input->name, batch_size);
-    model_ctx_t *ctx = gc(new model_ctx_t(p_ctx));
-    auto output = m->output->realize(*ctx, opt);
+    model_option_t opt(m->input.name, batch_size);
+    model_ctx_t *ctx = gc(new model_ctx_t(*p_ctx));
+    auto output = m->output.realize(*ctx, opt);
     auto places = ctx->places.items;
     if (places.size() != 1) {
         // TODO: support any number of placeholders
@@ -54,5 +54,5 @@ model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
         check(false);
     }
     printf("[D] realized s_model_t\n");
-    return new model_t(ctx, places[0], output);
+    return new model_t(*ctx, *places[0], *output);
 }

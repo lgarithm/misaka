@@ -49,4 +49,4 @@ void debug(const model_ctx_t &ctx)
     print_opertors(ctx);
 }
 
-void debug(const model_t &m) { debug(*m.ctx); }
+void debug(const model_t &m) { debug(m.ctx); }

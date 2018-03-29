@@ -70,7 +70,7 @@ struct adam_optimizer_t : optimizer_t {
 
         explicit ctx(model_t *model)
         {
-            for (auto node : model->ctx->params.items) {
+            for (auto node : model->ctx.params.items) {
                 p_ctxs.push_back(std::make_unique<p_ctx>(node));
             }
         }

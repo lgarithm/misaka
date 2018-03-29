@@ -20,14 +20,14 @@ struct s_trainer_t {
     static node_t *make_label(model_t *model)
     {
         // TODO: generate a unique name
-        return model->ctx->make_placeholder("label", model->output->shape);
+        return model->ctx.make_placeholder("label", model->output.shape);
     }
 
     static node_t *make_loss(model_t *model, node_t *label,
                              operator_t *loss_func)
     {
-        node_t *args[] = {label, model->output};
-        return model->ctx->make_operator(loss_func->name, *loss_func, args);
+        const node_t *args[] = {label, &(model->output)};
+        return model->ctx.make_operator(loss_func->name, *loss_func, args);
     }
 
     s_trainer_t(const s_model_t *model, operator_t *loss_func,
@@ -51,7 +51,7 @@ struct s_trainer_t {
         for (auto[images, label_s] : batch(ds, batch_size)) {
             ++step;
             printf("[D] begin step %u\n", step);
-            m->input->bind(images);
+            m->input.bind(images);
             label->bind(label_s);
             TRACE_IT(loss->forward());
             r_tensor_ref_t<float>(loss->gradient()).fill_uni();
@@ -77,12 +77,12 @@ struct s_trainer_t {
         uint32_t step = 0;
         for (auto[images, label_s] : batch(ds, batch_size)) {
             ++step;
-            m->input->bind(images);
-            TRACE_IT(m->output->forward());
+            m->input.bind(images);
+            TRACE_IT(m->output.forward());
             using T = float;
             for (auto i : range(batch_size)) {
                 auto p = argmax(r_tensor_ref_t<T>(label_s[i]));
-                auto q = argmax(r_tensor_ref_t<T>(m->output->value()[i]));
+                auto q = argmax(r_tensor_ref_t<T>(m->output.value()[i]));
                 p == q ? ++yes : ++no;
             }
             printf("test step: %u, %u/%u\n", step, yes, yes + no);

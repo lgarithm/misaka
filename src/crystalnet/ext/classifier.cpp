@@ -40,10 +40,10 @@ struct classifier_t {
         TRACE(__func__);
         using T = float;
         k = std::min(k, class_number);
-        model->input->bind(embed(input));
-        TRACE_IT(model->output->forward());
+        model->input.bind(embed(input));
+        TRACE_IT(model->output.forward());
         TRACE_IT(debug(*model));
-        const auto output = ranked<2, T>(model->output->value());
+        const auto output = ranked<2, T>(model->output.value());
         tensor_t _indexes(shape_t(k), idx_type<int32_t>::type);
         const auto indexes = ranked<1, int32_t>(ref(_indexes));
         top_indexes(output[0], indexes);
@@ -59,10 +59,10 @@ struct classifier_t {
     uint32_t most_likely(const tensor_ref_t &input) const
     {
         TRACE(__func__);
-        model->input->bind(embed(input));
-        model->output->forward();
+        model->input.bind(embed(input));
+        model->output.forward();
         using T = float;
-        r_tensor_ref_t<T> output(model->output->value());
+        r_tensor_ref_t<T> output(model->output.value());
         return argmax(r_tensor_ref_t<T>(output));
     }
 };
