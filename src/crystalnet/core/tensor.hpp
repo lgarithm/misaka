@@ -48,6 +48,12 @@ struct tensor_ref_t : _tensor_meta_t {
                             (uint8_t *)(data) + offset);
     }
 
+    tensor_ref_t reshape(const shape_t &new_shape) const
+    {
+        check(shape.dim() == new_shape.dim());
+        return tensor_ref_t(new_shape, dtype, data);
+    }
+
     void copy_from(const tensor_ref_t &r) const
     {
         check(dtype == r.dtype);
