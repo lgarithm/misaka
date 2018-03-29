@@ -105,18 +105,18 @@ struct operator_node_t : node_t {
     tensor_ref_list_t _input_refs() const
     {
         std::vector<tensor_ref_t> input_refs;
-        for (auto i : this->inputs) {
-            input_refs.push_back(i->value());
-        }
+        std::transform(inputs.begin(), inputs.end(),
+                       std::back_inserter(input_refs),
+                       [](auto i) { return i->value(); });
         return tensor_ref_list_t(input_refs);
     }
 
     tensor_ref_list_t _input_grad_refs() const
     {
         std::vector<tensor_ref_t> grad_refs;
-        for (auto i : this->inputs) {
-            grad_refs.push_back(i->gradient());
-        }
+        std::transform(inputs.begin(), inputs.end(),
+                       std::back_inserter(grad_refs),
+                       [](auto i) { return i->gradient(); });
         return tensor_ref_list_t(grad_refs);
     }
 
@@ -136,9 +136,6 @@ struct operator_node_t : node_t {
     {
         // TODO: op.backward should be present
         if (op.backward) {
-            tensor_ref_list_t input = _input_refs();
-            tensor_ref_list_t input_grads = _input_grad_refs();
-
             backward_ctx_t ctx(_input_refs(), ref(_value), _input_grad_refs(),
                                ref(_gradient));
             TRACE_NAME(op.name, (*op.backward)(ctx));
