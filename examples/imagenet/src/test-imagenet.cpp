@@ -74,7 +74,7 @@ void preprocess(const fs::path &p, const tensor_ref_t *input_image)
     const auto dim = to_hwc(input, tensor_ref(_tmp));
     assert(dim == shape_dim(tensor_shape(input_image)));
     using T = float;
-    T *data = (T *)tensor_data_ptr(input_image);
+    T *data = reinterpret_cast<T *>(tensor_data_ptr(input_image));
     uint8_t *tmp = (uint8_t *)tensor_data_ptr(tensor_ref(_tmp));
     const T mean[3] = {123.68, 116.779, 103.939};
     for (auto i = 0; i < dim; ++i) {
@@ -89,7 +89,7 @@ const tensor_t *load_test_image(const fs::path &p)
     const auto image = tensor_ref(_image);
     const auto dim = shape_dim(tensor_shape(image));
     using T = float;
-    T *data = (T *)tensor_data_ptr(image);
+    T *data = reinterpret_cast<T *>(tensor_data_ptr(image));
     const T mean[3] = {123.68, 116.779, 103.939};
     for (auto i = 0; i < dim; ++i) {
         data[i] -= mean[i % 3];
