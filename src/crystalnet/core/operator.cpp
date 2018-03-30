@@ -1,6 +1,6 @@
 #include <cstdio>
 
-#include <crystalnet.h>
+#include <crystalnet-internal.h>
 #include <crystalnet/core/gc.hpp>
 #include <crystalnet/core/operator.hpp>
 

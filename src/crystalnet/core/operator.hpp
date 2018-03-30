@@ -4,7 +4,7 @@
 #include <string>
 #include <type_traits>
 
-#include <crystalnet.h>
+#include <crystalnet-internal.h>
 #include <crystalnet/core/tensor.hpp>
 
 struct forward_ctx_t {

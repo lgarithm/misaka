@@ -22,18 +22,10 @@ extern const dtypes_t dtypes;
 extern const char *version();
 
 typedef struct shape_t shape_t;
-typedef struct shape_list_t shape_list_t;
 typedef struct shape_ctx_t shape_ctx_t;
 typedef struct tensor_t tensor_t;
 typedef struct tensor_ref_t tensor_ref_t;
-
-// TODO: make it possible to add user defined operators
-typedef struct forward_ctx_t forward_ctx_t;
-typedef struct backward_ctx_t backward_ctx_t;
 typedef struct operator_t operator_t;
-typedef struct shape_func_t shape_func_t;
-typedef struct forward_func_t forward_func_t;
-typedef struct backward_func_t backward_func_t;
 
 extern const shape_t *new_shape(int, ...);
 extern void del_shape(const shape_t *);
@@ -42,8 +34,6 @@ extern uint32_t shape_rank(const shape_t *);
 extern shape_ctx_t *new_shape_ctx();
 extern void del_shape_ctx(shape_ctx_t *);
 extern const shape_t *mk_shape(shape_ctx_t *, int, ...);
-extern const shape_list_t *mk_shape_list(shape_ctx_t *,
-                                         const shape_t *const p_shapes[]);
 
 extern tensor_t *new_tensor(const shape_t *, uint8_t);
 extern void del_tensor(const tensor_t *);
@@ -53,8 +43,6 @@ extern const shape_t *tensor_shape(const tensor_ref_t *);
 extern const uint8_t tensor_dtype(const tensor_ref_t *);
 
 // operators
-extern const operator_t *register_op(const char *const, uint8_t, shape_func_t *,
-                                     forward_func_t *, backward_func_t *);
 extern const operator_t *op_add;
 extern const operator_t *op_mul;
 extern const operator_t *op_relu;
@@ -106,11 +94,6 @@ extern dataset_t *load_cifar();
 extern tensor_t *_load_idx_file(const char *);
 extern void _idx_file_info(const char *);
 extern void s_experiment(s_trainer_t *, dataset_t *, dataset_t *, uint32_t);
-
-// eager APIs
-extern shape_t *infer(const operator_t *, const shape_list_t *);
-extern void eval(const operator_t *, const forward_ctx_t *);
-extern void grad(const operator_t *, const backward_ctx_t *);
 
 #ifdef __cplusplus
 }

@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include <crystalnet.h>
+#include <crystalnet-internal.h>
 
 typedef shape_t const *p_shape_t;
 
