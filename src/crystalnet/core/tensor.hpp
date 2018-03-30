@@ -190,17 +190,9 @@ template <typename T> vector_ref_t<T> flatten(const tensor_ref_t &r)
 
 namespace std
 {
-inline string to_string(const tensor_t &t)
-{
-    return string("tensor(dtype=") + dtype_name(t.dtype) + ",rank" +
-           to_string(t.shape.rank()) + ",dim" + to_string(t.shape.dim());
-}
 inline string to_string(const tensor_ref_t &t)
 {
-    return string("tensor_ref(dtype=") + dtype_name(t.dtype) +
-           ",rank=" + to_string(t.shape.rank()) +
-           ",dim=" + to_string(t.shape.dim()) + ",shape=" + to_string(t.shape) +
-           ")";
+    return dtype_name(t.dtype) + to_string(t.shape);
 }
 }
 
