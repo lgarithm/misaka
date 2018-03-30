@@ -78,7 +78,6 @@ extern s_node_t *var(s_model_ctx_t *, const shape_t *);
 extern s_node_t *covar(s_model_ctx_t *, const shape_t *);
 extern s_node_t *reshape(s_model_ctx_t *, const shape_t *, const s_node_t *);
 extern s_node_t *apply(s_model_ctx_t *, const operator_t *, s_node_t *args[]);
-extern s_node_t *_apply(s_model_ctx_t *, const operator_t *, int, ...); // py
 
 // training
 typedef struct dataset_t dataset_t;
