@@ -53,18 +53,18 @@ extern const shape_t *tensor_shape(const tensor_ref_t *);
 extern const uint8_t tensor_dtype(const tensor_ref_t *);
 
 // operators
-extern operator_t *register_op(const char *const, uint8_t, shape_func_t *,
-                               forward_func_t *, backward_func_t *);
-extern operator_t *op_add;
-extern operator_t *op_mul;
-extern operator_t *op_relu;
-extern operator_t *op_softmax;
-extern operator_t *op_xentropy;
+extern const operator_t *register_op(const char *const, uint8_t, shape_func_t *,
+                                     forward_func_t *, backward_func_t *);
+extern const operator_t *op_add;
+extern const operator_t *op_mul;
+extern const operator_t *op_relu;
+extern const operator_t *op_softmax;
+extern const operator_t *op_xentropy;
 // unstable operators:
-extern operator_t *op_conv_nhwc;
-extern operator_t *op_pool2d_c_max;
-extern operator_t *make_op_pool2d(uint32_t, uint32_t, uint32_t, uint32_t);
-extern operator_t *make_op_conv2d(uint32_t, uint32_t, uint32_t, uint32_t);
+extern const operator_t *op_conv_nhwc;
+extern const operator_t *op_pool2d_c_max;
+extern const operator_t *make_op_pool2d(uint32_t, uint32_t, uint32_t, uint32_t);
+extern const operator_t *make_op_conv2d(uint32_t, uint32_t, uint32_t, uint32_t);
 
 // symbolic APIs
 typedef struct s_node_t s_node_t;
@@ -78,21 +78,23 @@ extern s_node_t *var(s_model_ctx_t *, const shape_t *);
 extern s_node_t *covar(s_model_ctx_t *, const shape_t *);
 extern s_node_t *reshape(s_model_ctx_t *, const shape_t *, const s_node_t *);
 extern s_node_t *apply(s_model_ctx_t *, const operator_t *, s_node_t *args[]);
+extern s_node_t *_apply(s_model_ctx_t *, const operator_t *, int, ...); // py
 
 // training
 typedef struct dataset_t dataset_t;
 typedef struct s_trainer_t s_trainer_t;
 
 typedef struct optimizer_t optimizer_t;
-extern optimizer_t *opt_sgd;
-extern optimizer_t *opt_adam;
+extern const optimizer_t *opt_sgd;
+extern const optimizer_t *opt_adam;
 
 // dataset_t *new_dataset();
 extern void del_dataset(dataset_t *);
 extern const shape_t *ds_image_shape(dataset_t *);
 extern const shape_t *ds_label_shape(dataset_t *);
 
-extern s_trainer_t *new_s_trainer(s_model_t *, operator_t *, optimizer_t *);
+extern s_trainer_t *new_s_trainer(const s_model_t *, const operator_t *,
+                                  const optimizer_t *);
 extern void del_s_trainer(s_trainer_t *);
 extern void s_trainer_run(s_trainer_t *, dataset_t *);
 extern void s_rtainer_test(s_trainer_t *, dataset_t *);
