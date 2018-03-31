@@ -6,6 +6,8 @@
 extern "C" {
 #endif
 
+extern const char *version();
+
 typedef struct dtypes_t dtypes_t;
 
 struct dtypes_t {
@@ -16,10 +18,7 @@ struct dtypes_t {
     const uint8_t f32;
     const uint8_t f64;
 };
-
 extern const dtypes_t dtypes;
-
-extern const char *version();
 
 typedef struct shape_t shape_t;
 typedef struct shape_ctx_t shape_ctx_t;
@@ -42,18 +41,6 @@ extern void *tensor_data_ptr(const tensor_ref_t *);
 extern const shape_t *tensor_shape(const tensor_ref_t *);
 extern const uint8_t tensor_dtype(const tensor_ref_t *);
 
-// operators
-extern const operator_t *op_add;
-extern const operator_t *op_mul;
-extern const operator_t *op_relu;
-extern const operator_t *op_softmax;
-extern const operator_t *op_xentropy;
-// unstable operators:
-extern const operator_t *op_conv_nhwc;
-extern const operator_t *op_pool2d_c_max;
-extern const operator_t *make_op_pool2d(uint32_t, uint32_t, uint32_t, uint32_t);
-extern const operator_t *make_op_conv2d(uint32_t, uint32_t, uint32_t, uint32_t);
-
 // symbolic APIs
 typedef struct s_node_t s_node_t;
 typedef s_node_t *symbol;
@@ -67,13 +54,10 @@ extern s_node_t *covar(s_model_ctx_t *, const shape_t *);
 extern s_node_t *reshape(s_model_ctx_t *, const shape_t *, const s_node_t *);
 extern s_node_t *apply(s_model_ctx_t *, const operator_t *, s_node_t *args[]);
 
-// training
+// high level APIs
 typedef struct dataset_t dataset_t;
-typedef struct s_trainer_t s_trainer_t;
-
 typedef struct optimizer_t optimizer_t;
-extern const optimizer_t *opt_sgd;
-extern const optimizer_t *opt_adam;
+typedef struct s_trainer_t s_trainer_t;
 
 // dataset_t *new_dataset();
 extern void del_dataset(dataset_t *);
@@ -94,6 +78,22 @@ extern dataset_t *load_cifar();
 extern tensor_t *_load_idx_file(const char *);
 extern void _idx_file_info(const char *);
 extern void s_experiment(s_trainer_t *, dataset_t *, dataset_t *, uint32_t);
+
+// operators
+extern const operator_t *op_add;
+extern const operator_t *op_mul;
+extern const operator_t *op_relu;
+extern const operator_t *op_softmax;
+extern const operator_t *op_xentropy;
+// unstable operators:
+extern const operator_t *op_conv_nhwc;
+extern const operator_t *op_pool2d_c_max;
+extern const operator_t *make_op_pool2d(uint32_t, uint32_t, uint32_t, uint32_t);
+extern const operator_t *make_op_conv2d(uint32_t, uint32_t, uint32_t, uint32_t);
+
+// optimizers
+extern const optimizer_t *opt_sgd;
+extern const optimizer_t *opt_adam;
 
 #ifdef __cplusplus
 }
