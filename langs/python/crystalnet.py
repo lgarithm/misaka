@@ -1,8 +1,7 @@
 """crystalnet is the Python binding for libcrystalnet."""
 
-import os
 import platform
-from ctypes import cast, cdll, c_char_p, c_void_p
+from ctypes import c_char_p, c_void_p, cdll
 
 prefix = './build/lib'
 # prefix = os.path.join(os.getenv('HOME'), 'local/crystalnet/lib')
@@ -34,6 +33,7 @@ def version() -> str:
     """version binds version."""
     return lib.version().decode()
 
+
 mul = c_void_p.in_dll(lib, 'op_mul')
 add = c_void_p.in_dll(lib, 'op_add')
 softmax = c_void_p.in_dll(lib, 'op_softmax')
@@ -62,33 +62,34 @@ class Shape(object):
 
 
 class Global(object):
-
     def __init__(self):
         self.s_model_ctx = lib.make_s_model_ctx()
+
 
 g = Global()
 ctx = g.s_model_ctx
 
+
 class Tensor(object):
     """Tensor is tensor_t."""
-    pass
 
 
 class TensorRef(object):
     """TensorRef is tensor_ref_t."""
-    pass
 
 
 class SNode(object):
     def __init__(self, n):
         self.handle = n
 
-def var(shape : Shape) -> SNode:
+
+def var(shape: Shape) -> SNode:
     return SNode(lib.var(ctx, shape.handle))
 
 
 def reshape(shape: Shape, x: SNode) -> SNode:
     return SNode(lib.reshape(ctx, shape.handle, x.handle))
+
 
 def covar(shape: Shape) -> SNode:
     return SNode(lib.covar(ctx, shape.handle))
@@ -109,9 +110,7 @@ class Model(object):
 
 class Optimizer(object):
     """Optimizer is optimizer_t."""
-    pass
 
 
 class Trainer(object):
     """Trainer is trainer_t."""
-    pass
