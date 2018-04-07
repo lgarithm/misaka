@@ -2,31 +2,16 @@
 
 #include <crystalnet.h>
 
-template <typename> struct idx_type;
-
-template <> struct idx_type<uint8_t> {
-    static constexpr uint8_t type = 0x08;
+template <typename> struct idx_type {
+    static uint8_t type;
 };
 
-template <> struct idx_type<int8_t> {
-    static constexpr uint8_t type = 0x09;
-};
-
-template <> struct idx_type<int16_t> {
-    static constexpr uint8_t type = 0x0B;
-};
-
-template <> struct idx_type<int32_t> {
-    static constexpr uint8_t type = 0x0C;
-};
-
-template <> struct idx_type<float> {
-    static constexpr uint8_t type = 0x0D;
-};
-
-template <> struct idx_type<double> {
-    static constexpr uint8_t type = 0x0E;
-};
+template <> uint8_t idx_type<uint8_t>::type = 0x08;
+template <> uint8_t idx_type<int8_t>::type = 0x09;
+template <> uint8_t idx_type<int16_t>::type = 0x0b;
+template <> uint8_t idx_type<int32_t>::type = 0x0c;
+template <> uint8_t idx_type<float>::type = 0x0d;
+template <> uint8_t idx_type<double>::type = 0x0e;
 
 template <typename T> void test_dtyped()
 {
