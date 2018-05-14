@@ -16,7 +16,7 @@ template <typename T> struct named_context_t : generic_context_t<T> {
     std::map<std::string, const T *> index;
     std::vector<std::pair<std::string, const T *>> items;
 
-    named_context_t(const std::string &default_prefix)
+    explicit named_context_t(const std::string &default_prefix)
         : default_prefix(default_prefix)
     {
     }

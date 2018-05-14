@@ -54,7 +54,8 @@ struct s_node_list_t {
     // TODO: deprecate
     explicit s_node_list_t(const owner_t &nodes) : nodes(nodes) {}
 
-    s_node_list_t(const std::initializer_list<s_node_t *> &init) : nodes(init)
+    explicit s_node_list_t(const std::initializer_list<s_node_t *> &init)
+        : nodes(init)
     {
     }
 
