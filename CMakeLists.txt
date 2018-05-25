@@ -44,6 +44,26 @@ add_custom_target(doxygen COMMAND doxygen ${CMAKE_SOURCE_DIR}/docs/Doxyfile)
 #                   DEPENDS doxygen)
 
 
+# contrib
+set(DARKNET_PATH $ENV{HOME}/local/darknet)
+include_directories(${DARKNET_PATH}/include)
+link_directories(${DARKNET_PATH}/lib)
+
+set(OPENCV_PATH $ENV{HOME}/local/opencv)
+include_directories(${OPENCV_PATH}/include)
+link_directories(${OPENCV_PATH}/lib)
+
+file(GLOB yolo_srcs src/crystalnet-contrib/**/*.cpp
+                    src/crystalnet-contrib/**/*.c)
+add_executable(yolo ${yolo_srcs})
+target_link_libraries(yolo crystalnet darknet)
+IF("${CMAKE_SYSTEM}" MATCHES "Linux")
+    target_link_libraries(yolo stdc++fs)
+endif()
+
+target_link_libraries(yolo opencv_core opencv_imgproc opencv_highgui opencv_imgcodecs)
+
+
 # https://gitlab.kitware.com/cmake/community/wikis/doc/cpack/PackageGenerators
 SET(CPACK_GENERATOR "TGZ")
 # if ((${CMAKE_SYSTEM_NAME} MATCHES "Linux"))

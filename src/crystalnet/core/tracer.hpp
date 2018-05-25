@@ -10,7 +10,6 @@ struct tracer_ctx_t {
     const std::string name;
 
     int depth;
-
     using duration_t = std::chrono::duration<double>;
     std::map<std::string, duration_t> total_durations;
     std::map<std::string, uint32_t> call_times;
@@ -32,6 +31,8 @@ struct tracer_ctx_t {
         printf(args...);
         putchar('\n');
     }
+
+    void report(FILE *fp) const;
 };
 
 struct tracer_t {

@@ -29,21 +29,28 @@ struct xterm_t {
 
 tracer_ctx_t::~tracer_ctx_t()
 {
+    FILE *fp = fopen("trace.log", "w");
+    report(fp);
+    fclose(fp);
+}
+
+void tracer_ctx_t::report(FILE *fp) const
+{
     using item_t = std::tuple<duration_t, uint32_t, std::string>;
     std::vector<item_t> list;
     for (const auto [name, duration] : total_durations) {
-        list.push_back(item_t(duration, call_times[name], name));
+        list.push_back(item_t(duration, call_times.at(name), name));
     }
     std::sort(list.rbegin(), list.rend());
 
     const std::string hr(80, '-');
-    printf("\tsummary of %s::%s\n", "tracer_ctx_t", name.c_str());
-    printf("%s\n", hr.c_str());
-    printf("%8s    %16s    %s\n", "count", "total duration", "name");
-    printf("%s\n", hr.c_str());
+    fprintf(fp, "\tsummary of %s::%s\n", "tracer_ctx_t", name.c_str());
+    fprintf(fp, "%s\n", hr.c_str());
+    fprintf(fp, "%8s    %16s    %s\n", "count", "total duration", "name");
+    fprintf(fp, "%s\n", hr.c_str());
     for (const auto &[duration, count, name] : list) {
-        printf("%8d    %16fs    %s\n",  //
-               count, duration.count(), name.c_str());
+        fprintf(fp, "%8d    %16fs    %s\n",  //
+                count, duration.count(), name.c_str());
     }
 }
 
