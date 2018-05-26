@@ -15,4 +15,5 @@ mkdir -p $LOG_DIR
 LOG_FILE=$LOG_DIR/crystalnet.log
 
 time ./build/$(uname -s)/bin/yolo -m $MODEL_DIR -f $TEST_IMAGE 2> stderr.log | tee $LOG_FILE
-echo "log saved to $LOG_FILE"
+EXIT_CODE=$?
+echo "log saved to $LOG_FILE , exit code: $EXIT_CODE"

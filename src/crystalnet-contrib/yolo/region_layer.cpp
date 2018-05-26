@@ -57,16 +57,11 @@ struct region_op {
 
     using T = float;
 
-    // tensor_t _bias;
-    // r_tensor_ref_t<T> bias;
-
     region_op(int h, int w, int n, int classes, int coords)
         : h(h), w(w),                                                //
           n(n),                                                      //
           classes(classes), coords(coords), m(coords + 1 + classes)  //
-    //   _bias(shape_t(n, 2), dtypes.f32), bias(_bias)
     {
-        // bias.fill(.5);
     }
 
     shape_t infer(const shape_list_t &shape_list) const
@@ -112,7 +107,6 @@ struct region_op {
                 const uint32_t stride = h * w;
                 for (auto i : range(h)) {
                     for (auto j : range(w)) {
-
                         const auto act = logistic<T>();
                         act(yy[0].at(i, j));
                         act(yy[1].at(i, j));
@@ -120,18 +114,6 @@ struct region_op {
                         //
                         const auto data = yy[5].data + i * w + j;
                         softmax(classes, stride, data, data);
-                        const proxy_array_t<T> probs(data, classes, stride);
-                        T mx = std::numeric_limits<T>::lowest();
-                        uint32_t max_idx = 0;
-                        for (int i = 0; i < classes; ++i) {
-                            if (probs[i] > mx) {
-                                max_idx = i;
-                                mx = probs[i];
-                            }
-                        }
-                        const std::string name = coco_names_80.at(max_idx);
-                        logf("(%-3u, %-3u): [%-3u] = %f, (%s)", i, j, max_idx,
-                             mx, name.c_str());
                     }
                 }
             }

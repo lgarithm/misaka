@@ -79,20 +79,6 @@ const tensor_t *load_test_image(const char *filename)
     return image_to_chw(input_image);
 }
 
-template <typename T> tensor_t *hwc_to_chw(const tensor_ref_t &_t)
-{
-    const auto t = ranked<3, T>(_t);
-    const auto [h, w, c] = t.shape.dims;
-    tensor_t *__t = new tensor_t(shape_t(c, h, w), idx_type<T>::type);
-    const auto r = ranked<3, T>(ref(*__t));
-    for (auto l : range(c)) {
-        for (auto i : range(h)) {
-            for (auto j : range(w)) { r.at(l, i, j) = t.at(i, j, l); }
-        }
-    }
-    return __t;
-}
-
 std::string extension(const fs::path &p)
 {
     // TODO: use p.extension() when it's available

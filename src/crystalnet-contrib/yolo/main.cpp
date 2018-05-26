@@ -6,6 +6,7 @@
 #include <crystalnet-ext.h>
 #include <crystalnet-internal.h>
 
+#include <crystalnet-contrib/image/bmp.hpp>
 #include <crystalnet-contrib/vis/snapshot.hpp>
 #include <crystalnet-contrib/vis/vis.hpp>
 #include <crystalnet-contrib/yolo/detection.hpp>
@@ -18,16 +19,9 @@
 
 namespace fs = std::experimental::filesystem;
 
-std::vector<std::string> coco_names_80;
-
-// using candidate_t = struct {
-//     std::string name;
-// };
-
 void run(const options_t &opt)
 {
     const auto names = load_name_list(opt.darknet_path / "data/coco.names");
-    coco_names_80 = names;
     const auto input = [&]() {
         if (extension(opt.filename) == ".bmp" ||
             extension(opt.filename) == ".idx") {
@@ -90,24 +84,49 @@ void run(const options_t &opt)
 
         const auto y = p_model->output.value().reshape(shape_t(c, h, w));
         const auto anchor_boxes = ref(*p_ctx->index.at("yolov2_31_anchors"));
+        {
+            logf("%s", summary(r_tensor_ref_t<T>(anchor_boxes)).c_str());
+        }
         return get_detections(y, anchor_boxes);
     }();
     {
         TRACE("main::show detections");
         using T = float;
+        int no = 0;
         for (const auto &d : dets) {
-            // logf("%s", p_str(d->bbox));
             const auto probs = ranked<1, T>(ref(d->probs));
             const auto idx =
                 std::max_element(probs.data, probs.data + 80) - probs.data;
-            logf("(%3d, %3d): %s (%ld): %f",  //
-                 d->i, d->j, names.at(idx).c_str(), idx, probs.at(idx));
+            logf("%d: (%3d, %3d): %s (%ld): %f",  //
+                 no++, d->i, d->j, names.at(idx).c_str(), idx, probs.at(idx));
             if (probs.at(idx) > 0.7) {
-                fprintf(stderr, "(%3d, %3d): %-4ld %-20s: %f\n",  //
-                        d->i, d->j, idx, names.at(idx).c_str(), probs.at(idx));
-                // awk '{print $5, $7}' stderr.log
+                logf("(%3d, %3d): %-4ld %-20s: %f",  //
+                     d->i, d->j, idx, names.at(idx).c_str(), probs.at(idx));
             }
         }
+    }
+    {
+        TRACE("main::draw detections");
+        using T = float;
+        const auto n = input->shape.dim();
+        const auto x = chw_to_hwc<T>(ref(*input));
+        const tensor_t y(x->shape, dtypes.u8);
+        std::transform((T *)x->data, (T *)x->data + n, (uint8_t *)y.data,
+                       [](T v) { return (uint8_t)(v * 255); });
+        const auto ry = ranked<3, uint8_t>(ref(y));
+        for (const auto &d : dets) {
+            const auto probs = ranked<1, T>(ref(d->probs));
+            const auto idx =
+                std::max_element(probs.data, probs.data + 80) - probs.data;
+            if (probs.at(idx) > 0.8) {
+                logf("%d (%-32s): %f", idx, names.at(idx).c_str(),
+                     probs.at(idx));
+                const auto c =
+                    rasterize(d->bbox, yolov2_input_size, yolov2_input_size);
+                draw_clip(ry, c);
+            }
+        }
+        write_bmp_file("input.bmp", ry);
     }
 
     del_model(p_model);
@@ -123,6 +142,8 @@ int main(int argc, char *argv[])
         run(opt);
     } catch (const std::exception &e) {
         std::cout << e.what() << std::endl;
+    } catch (...) {
+        std::cout << "unknown exception" << std::endl;
     }
     return 0;
 }

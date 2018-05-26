@@ -1,16 +1,13 @@
-#include "darknet.h"
-#include "yolo.h"
-
 #include <stddef.h>
 #include <stdio.h>
 
+#include <crystalnet-contrib/yolo/conv_layer.h>
+#include <crystalnet-contrib/yolo/pool_layer.h>
+#include <crystalnet-contrib/yolo/region_layer.h>
+#include <crystalnet-contrib/yolo/reorg_layer.h>
+#include <crystalnet-contrib/yolo/route_layer.h>
+#include <crystalnet-contrib/yolo/yolo.h>
 #include <crystalnet-ext.h>
-
-#include "conv_layer.h"
-#include "pool_layer.h"
-#include "region_layer.h"
-#include "reorg_layer.h"
-#include "route_layer.h"
 
 const uint32_t yolov2_input_size = 416;
 

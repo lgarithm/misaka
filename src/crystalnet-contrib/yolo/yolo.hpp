@@ -17,5 +17,3 @@ inline std::string name_prefix(const s_model_ctx_t &ctx)
     sprintf(name_prefix, "yolov2_%02d", layer_number);
     return name_prefix;
 }
-
-extern std::vector<std::string> coco_names_80;

@@ -81,3 +81,43 @@ tensor_t *read_bmp_file(const char *filename)
     for (int i = 0; i < n; ++i) { _r[i] = pixels[i] / 255.0; }
     return _t;
 }
+
+void write_bmp_file(const char *filename,
+                    const ranked_tensor_ref_t<uint8_t, 3> &image)
+{
+    const auto [h, w, c] = image.shape.dims;
+    if (c != 3) { throw std::invalid_argument("channel must be 3"); }
+    FILE *fp = std::fopen(filename, "wb");
+    if (fp == nullptr) {
+        throw std::runtime_error(std::string("can't open ") + filename);
+    }
+    static const char magic[2] = {'B', 'M'};
+    if (std::fwrite(magic, 2, 1, fp) != 1) {
+        throw std::runtime_error("failed to write");
+    }
+    const uint32_t rs = row_size(w, 24);
+    bmp_header_t header;
+    header.file_size = rs * h + 54;
+    if (std::fwrite(&header, sizeof(bmp_header_t), 1, fp) != 1) {
+        throw std::runtime_error("failed to write");
+    }
+    bmp_info_t info;
+    info.width = w;
+    info.height = h;
+    info.image_size = rs * h;
+    if (std::fwrite(&info, sizeof(bmp_info_t), 1, fp) != 1) {
+        throw std::runtime_error("failed to write");
+    }
+    uint8_t row[rs];
+    std::memset(row, 0, sizeof(row));
+    for (int i = 0; i < h; ++i) {
+        const auto p = image[h - i - 1];
+        copy_slice(row + 0, p.data + 2, w, 3);
+        copy_slice(row + 1, p.data + 1, w, 3);
+        copy_slice(row + 2, p.data + 0, w, 3);
+        if (std::fwrite(row, rs, 1, fp) != 1) {
+            throw std::runtime_error("failed to write");
+        }
+    }
+    std::fclose(fp);
+}
