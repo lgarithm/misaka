@@ -1,5 +1,6 @@
 #include <cmath>
 
+#include <crystalnet-contrib/darknet/darknet.h>
 #include <crystalnet-contrib/yolo/activation.hpp>
 #include <crystalnet-contrib/yolo/region_layer.h>
 #include <crystalnet-contrib/yolo/yolo.hpp>
@@ -97,9 +98,17 @@ struct region_op {
         const auto _y = ctx.output;
 
         _y.copy_from(_x);
-
         const auto x = ranked<5, T>(_x.reshape(new_shape));
         const auto y = ranked<5, T>(_y.reshape(new_shape));
+
+        const bool use_origin = true;
+        if (use_origin) {
+            forward_region_layer(x.data, batch_size, y.data, n * m * h * w,  //
+                                 n, w, h);
+            return;
+        }
+
+        const auto act = logistic<T>();
 
         for (auto b : range(batch_size)) {
             for (auto nn : range(n)) {
@@ -107,11 +116,9 @@ struct region_op {
                 const uint32_t stride = h * w;
                 for (auto i : range(h)) {
                     for (auto j : range(w)) {
-                        const auto act = logistic<T>();
                         act(yy[0].at(i, j));
                         act(yy[1].at(i, j));
                         act(yy[4].at(i, j));
-                        //
                         const auto data = yy[5].data + i * w + j;
                         softmax(classes, stride, data, data);
                     }

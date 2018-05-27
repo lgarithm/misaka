@@ -61,9 +61,9 @@ void tracer_ctx_t::out(const std::string &name, const duration_t &duration)
     --depth;
 }
 
-void tracer_ctx_t::indent()
+void tracer_ctx_t::indent(FILE *fp)
 {
-    for (int i = 0; i < depth; ++i) { printf("    "); }
+    for (int i = 0; i < depth; ++i) { fprintf(fp, "    "); }
 }
 
 tracer_ctx_t default_tracer_ctx("global");
@@ -87,4 +87,25 @@ tracer_t::~tracer_t()
     ctx.indent();
     WITH_XTERM(1, 32, printf("} // %s", buffer));
     putchar('\n');
+}
+
+set_trace_log_t::set_trace_log_t(const std::string &name, bool reuse,
+                                 tracer_ctx_t &ctx)
+    : ctx(ctx), name(name)
+{
+    FILE *fp = reuse  //
+                   ? std::fopen(name.c_str(), "a")
+                   : std::fopen(name.c_str(), "w");
+    ctx.log_files.push_front(fp);
+    ctx.indent();
+    ctx.logf1(stdout, "start logging to %s", name.c_str());
+}
+
+set_trace_log_t::~set_trace_log_t()
+{
+    ctx.indent();
+    ctx.logf1(stdout, "stop logging to file://%s", name.c_str());
+    FILE *fp = ctx.log_files.front();
+    ctx.log_files.pop_front();
+    std::fclose(fp);
 }

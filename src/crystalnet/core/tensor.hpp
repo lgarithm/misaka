@@ -1,14 +1,11 @@
 #pragma once
 #include <cmath>
+#include <cstring>
 
 #include <algorithm>
 #include <cstdint>
-#include <cstring>
-#include <iomanip>
 #include <memory>
 #include <numeric>
-#include <sstream>
-#include <string>
 #include <vector>
 
 #include <crystalnet.h>
@@ -96,6 +93,8 @@ template <typename T> T sqr(T x) { return x * x; }
 template <typename R> struct r_tensor_ref_t {
     const shape_t shape;
     R *const data;
+
+    r_tensor_ref_t(const shape_t &shape, R *data) : shape(shape), data(data) {}
 
     explicit r_tensor_ref_t(const tensor_t &t)
         : shape(t.shape), data((R *)t.data)
@@ -203,39 +202,4 @@ template <typename T> vector_ref_t<T> flatten(const tensor_ref_t &r)
     return vector_ref_t<T>(ranked_shape_t<1>(r.shape.dim()), (T *)r.data);
 }
 
-template <typename T> struct tensor_summary_t {
-    const uint32_t dim;
-    const T min;
-    const T mean;
-    const T max;
-    const T std;
-
-    tensor_summary_t(const r_tensor_ref_t<T> &r)
-        : dim(r.shape.dim()), min(r.min()), mean(r.mean()), max(r.max()),
-          std(r.std())
-    {
-    }
-};
-
-namespace std
-{
-inline string to_string(const tensor_ref_t &t)
-{
-    return dtype_name(t.dtype) + to_string(t.shape);
-}
-
-inline string to_string(const tensor_t &t) { return to_string(ref(t)); }
-
-template <typename T> inline string to_string(const tensor_summary_t<T> &s)
-{
-    stringstream ss;
-    ss << std::fixed << "[" << s.min << ", " << s.max << "]"
-       << ", mean=" << s.mean << ", std=" << s.std << ", dim=" << s.dim;
-    return ss.str();
-}
-}  // namespace std
-
-template <typename T> auto summary(const r_tensor_ref_t<T> &r)
-{
-    return std::to_string(tensor_summary_t<T>(r));
-}
+#include <crystalnet/debug/tensor.hpp>

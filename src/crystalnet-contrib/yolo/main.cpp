@@ -19,90 +19,77 @@
 
 namespace fs = std::experimental::filesystem;
 
+const fs::path home(std::getenv("HOME"));
+
 void run(const options_t &opt)
 {
     const auto names = load_name_list(opt.darknet_path / "data/coco.names");
     const auto input = [&]() {
         if (extension(opt.filename) == ".bmp" ||
             extension(opt.filename) == ".idx") {
-            logf("using resized test image: %s", opt.filename.c_str());
+            // logf("using resized test image: %s", opt.filename.c_str());
             return load_resized_test_image(opt.filename.c_str());
         }
         return load_test_image(opt.filename.c_str());
     }();
-    logf("input image: %s", std::to_string(input->shape).c_str());
+    // logf("input image: %s", std::to_string(input->shape).c_str());
 
     const s_model_t *s_model = []() {
-        TRACE(__func__);
+        // TRACE(__func__);
         return yolov2();
     }();
 
     {
-        TRACE("main::print symbolic model");
-        show_layers(*s_model);
+        // TRACE("main::draw symbolic model");
+        // show_layers(*s_model);
         FILE *fp = fopen("graph.dot", "w");
         graphviz(*s_model, fp);
         fclose(fp);
         system("dot -Tsvg graph.dot -O");
     }
-
     const auto p_ctx = new_parameter_ctx();
-    const model_t *p_model = [&]() {
-        TRACE(__func__);
-        return realize(p_ctx, s_model, 1);
-    }();
-    TRACE_IT(load_parameters(p_model, opt.model_dir));
+    const model_t *p_model = [&]() { return realize(p_ctx, s_model, 1); }();
+    load_parameters(p_model, opt.model_dir);
     {
-        TRACE("main::print parameters");
-        debug<tensor_t>(*p_ctx, [](const tensor_t *value) {
-            return summary(r_tensor_ref_t<float>(*value));
-        });
-    }
-
-    {
+        // TRACE("main::print parameters");
+        // debug<tensor_t>(*p_ctx, [](const tensor_t *value) {
+        //     return summary(r_tensor_ref_t<float>(*value));
+        // });
+    } {
         TRACE("main::inference");
         const auto r = ref(*input);
-        TRACE_IT(p_model->input.bind(r.reshape(r.shape.batch(1))));
-        TRACE_IT(p_model->forward());
+        p_model->input.bind(r.reshape(r.shape.batch(1)));
+        p_model->forward();
     }
     {
         TRACE("main::print layers");
+        SET_TRACE_LOG(home / "Desktop/diff/cn-layers.txt");
         using T = float;
-        const auto brief = summary(r_tensor_ref_t<T>(*input));
-        logf("input: %s", brief.c_str());
+        logf("input %-3d %s", 0, summary(r_tensor_ref_t<T>(*input)).c_str());
         show_layers(*p_model, *s_model);
     }
     {
-        TRACE("main::save layers");
-        save_layers(*p_model, *s_model);
+        // TRACE("main::save layers");
+        // save_layers(*p_model, *s_model);
     }
     const auto dets = [&]() {
         using T = float;
         const auto r = ranked<4, T>(p_model->output.value());
         const auto [n, c, h, w] = r.shape.dims;
-        printf("%d, %d, %d, %d\n", n, c, h, w);
-
         const auto y = p_model->output.value().reshape(shape_t(c, h, w));
         const auto anchor_boxes = ref(*p_ctx->index.at("yolov2_31_anchors"));
-        {
-            logf("%s", summary(r_tensor_ref_t<T>(anchor_boxes)).c_str());
-        }
+        // logf("%s", summary(r_tensor_ref_t<T>(anchor_boxes)).c_str());
         return get_detections(y, anchor_boxes);
     }();
     {
-        TRACE("main::show detections");
-        using T = float;
-        int no = 0;
+        TRACE("main::print detections");
+        SET_TRACE_LOG(home / "Desktop/diff/cn-bboxes.txt");
+        int i = 0;
         for (const auto &d : dets) {
-            const auto probs = ranked<1, T>(ref(d->probs));
-            const auto idx =
-                std::max_element(probs.data, probs.data + 80) - probs.data;
-            logf("%d: (%3d, %3d): %s (%ld): %f",  //
-                 no++, d->i, d->j, names.at(idx).c_str(), idx, probs.at(idx));
-            if (probs.at(idx) > 0.7) {
-                logf("(%3d, %3d): %-4ld %-20s: %f",  //
-                     d->i, d->j, idx, names.at(idx).c_str(), probs.at(idx));
-            }
+            const auto b = d->bbox;
+            logf("box %-4d: %s (%f, %f) [%f, %f]", i++,             //
+                 summary(r_tensor_ref_t<float>(d->probs)).c_str(),  //
+                 b.cx, b.cy, b.w, b.h);
         }
     }
     {
@@ -118,8 +105,8 @@ void run(const options_t &opt)
             const auto probs = ranked<1, T>(ref(d->probs));
             const auto idx =
                 std::max_element(probs.data, probs.data + 80) - probs.data;
-            if (probs.at(idx) > 0.8) {
-                logf("%d (%-32s): %f", idx, names.at(idx).c_str(),
+            if (d->scale > 0.55 && probs.at(idx) > 0.55) {
+                logf("%-4d (%s): %f", idx, names.at(idx).c_str(),
                      probs.at(idx));
                 const auto c =
                     rasterize(d->bbox, yolov2_input_size, yolov2_input_size);
@@ -136,14 +123,15 @@ void run(const options_t &opt)
 
 int main(int argc, char *argv[])
 {
-    TRACE(__func__);
     const auto opt = parse_flags(argc, argv);
     try {
         run(opt);
     } catch (const std::exception &e) {
         std::cout << e.what() << std::endl;
+        return 1;
     } catch (...) {
         std::cout << "unknown exception" << std::endl;
+        return 2;
     }
     return 0;
 }

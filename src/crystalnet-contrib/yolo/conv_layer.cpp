@@ -1,16 +1,15 @@
-#include "conv_layer.h"
-
+#include <crystalnet-contrib/darknet/darknet.h>
+#include <crystalnet-contrib/yolo/activation.hpp>
+#include <crystalnet-contrib/yolo/batch_normalization.hpp>
+#include <crystalnet-contrib/yolo/bias_layer.hpp>
+#include <crystalnet-contrib/yolo/conv_layer.h>
+#include <crystalnet-contrib/yolo/yolo.hpp>
 #include <crystalnet-internal.h>
 #include <crystalnet/core/cast.hpp>
 #include <crystalnet/core/operator.hpp>  // TODO: don't include private headers
 #include <crystalnet/layers/layer.hpp>
 #include <crystalnet/linag/linag.hpp>
 #include <crystalnet/utility/range.hpp>
-
-#include "activation.hpp"
-#include "batch_normalization.hpp"
-#include "bias_layer.hpp"
-#include "yolo.hpp"
 
 namespace darknet
 {
@@ -20,13 +19,6 @@ matrix_ref_t<T> cast_to_m(uint32_t m, uint32_t n,
 {
     check(m * n == tensor.shape.dim());
     return matrix_ref_t<T>(ranked_shape_t<2>(m, n), tensor.data);
-}
-
-template <typename T, uint8_t r>
-void inc(const ranked_tensor_ref_t<T, r> &t, T x)
-{
-    const auto n = t.shape.dim();
-    for (auto i : range(n)) { t.data[i] += x; }
 }
 
 // [N, C, H, W] \circ [D, C, R, S] -> [N, D, H', W']
@@ -81,6 +73,7 @@ struct conv_nchw_op {
     void im2col(const ranked_tensor_ref_t<T, 2> &x,
                 const ranked_tensor_ref_t<T, 4> &y) const
     {
+        // std::memset(y.data, 0, sizeof(T) * y.shape.dim());
         const auto [h, w] = x.shape.dims;
         const auto [r, s, h_, w_] = y.shape.dims;
         for (const auto u : range(r)) {
@@ -91,6 +84,8 @@ struct conv_nchw_op {
                         const uint32_t j = index(j_, v);
                         if (i >= padding && j >= padding) {
                             y.at(u, v, i_, j_) = x.at(i - padding, j - padding);
+                        } else {
+                            y.at(u, v, i_, j_) = 0;
                         }
                     }
                 }
@@ -102,9 +97,10 @@ struct conv_nchw_op {
     void im2col(const ranked_tensor_ref_t<T, 3> &x,
                 const ranked_tensor_ref_t<T, 5> &y) const
     {
-        TRACE(__func__);
         const auto [c, h, w] = x.shape.dims;
-        for (auto i : range(c)) { im2col(x[i], y[i]); }
+        const auto [_c, r, s, h_, w_] = y.shape.dims;
+        im2col_cpu(x.data, c, h, w, r, stride, padding, y.data);
+        // for (auto i : range(c)) { im2col(x[i], y[i]); }
     }
 
     void forward(const forward_ctx_t &ctx) const
@@ -132,9 +128,10 @@ struct conv_nchw_op {
             // const auto yy = ranked<3, T>(y[b]);
             const auto yy = y[b];
             im2col(xx, xx_);
-            linag<T>::mm(cast_to_m(d, c * r * s, ww),         //
-                         cast_to_m(c * r * s, h_ * w_, xx_),  //
-                         cast_to_m(d, h_ * w_, yy));
+            using engine = linag<T, plain_impl<T>>;
+            engine::mm(cast_to_m(d, c * r * s, ww),         //
+                       cast_to_m(c * r * s, h_ * w_, xx_),  //
+                       cast_to_m(d, h_ * w_, yy));
         }
     }
 
