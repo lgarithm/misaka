@@ -30,14 +30,13 @@ struct detection_t {
 
     bbox_t bbox;
 
-    const int classes;
     tensor_t probs;
 
-    float objectness;
-    float scale;
+    float objectness = 0;
+    float scale = 0;
 
-    detection_t(int classes, int coords)
-        : classes(classes), probs(shape_t(classes), idx_type<T>::type)
+    explicit detection_t(int classes)
+        : probs(shape_t(classes), idx_type<T>::type)
     {
     }
 };

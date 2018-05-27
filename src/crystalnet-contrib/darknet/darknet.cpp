@@ -1,3 +1,5 @@
+// https://github.com/pjreddie/darknet.git
+
 #include <cfloat>
 #include <string>
 

@@ -54,7 +54,7 @@ template <typename T> struct tensor_summary_t {
     const T adj_diff_sum;
     const uint32_t check_sum;
 
-    tensor_summary_t(const r_tensor_ref_t<T> &r)
+    explicit tensor_summary_t(const r_tensor_ref_t<T> &r)
         : dim(r.shape.dim()), min(r.min()), mean(r.mean()), max(r.max()),
           std(r.std()), adj_diff_sum(::adj_diff_sum(r.data, r.shape.dim())),
           check_sum(fletcher32_t()(r.data, r.shape.dim()))

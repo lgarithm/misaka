@@ -1,3 +1,4 @@
+// https://github.com/pjreddie/darknet.git
 #pragma once
 
 #ifdef __cplusplus

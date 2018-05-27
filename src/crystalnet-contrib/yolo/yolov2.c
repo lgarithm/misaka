@@ -14,7 +14,6 @@ const uint32_t yolov2_input_size = 416;
 s_model_t *yolov2()
 {
     shape_ctx_t *sc = new_shape_ctx();
-    trait_ctx_t *tc = new_trait_ctx();
     s_model_ctx_t *ctx = make_s_model_ctx();
 
     const shape_t *input_shape =

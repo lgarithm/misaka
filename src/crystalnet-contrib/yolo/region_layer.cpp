@@ -45,7 +45,7 @@ void softmax(uint32_t n, uint32_t stride, T *input, T *output)
     for (auto i : range(n)) { y[i] /= sum; }
 }
 
-struct region_op {
+template <bool use_origin = true> struct region_op_t {
     constexpr static uint8_t arity = 2;
 
     const int n;        // 5
@@ -58,7 +58,7 @@ struct region_op {
 
     using T = float;
 
-    region_op(int h, int w, int n, int classes, int coords)
+    region_op_t(int h, int w, int n, int classes, int coords)
         : h(h), w(w),                                                //
           n(n),                                                      //
           classes(classes), coords(coords), m(coords + 1 + classes)  //
@@ -101,7 +101,6 @@ struct region_op {
         const auto x = ranked<5, T>(_x.reshape(new_shape));
         const auto y = ranked<5, T>(_y.reshape(new_shape));
 
-        const bool use_origin = true;
         if (use_origin) {
             forward_region_layer(x.data, batch_size, y.data, n * m * h * w,  //
                                  n, w, h);
@@ -141,6 +140,7 @@ struct region_layer : s_layer_t {
     const int h;  // 13
     const int w;  // 13
 
+    using region_op = region_op_t<true>;
     std::unique_ptr<region_op> _op;
     const operator_t *op;
 

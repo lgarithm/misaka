@@ -19,7 +19,7 @@ std::string layer_name(LAYER_TYPE lt) { return get_layer_string(lt); }
 
 struct saver_t {
     const fs::path path;
-    saver_t(const fs::path &path) : path(path) {}
+    explicit saver_t(const fs::path &path) : path(path) {}
 
     void operator()(const std::string &name, const tensor_ref_t *r) const
     {
@@ -85,7 +85,7 @@ struct converter_t {
         del_shape(shape);
     }
 
-    std::string lpad(const std::string s, int width, char ch) const
+    std::string lpad(const std::string &s, int width, char ch) const
     {
         return std::string(std::max<int>(width - s.size(), 0), ch) + s;
     }

@@ -31,8 +31,7 @@ detection_list_t get_detections(const tensor_ref_t &t,
                 bbox.w = e.at(l, 0) * std::exp(r.at(l, 2, i, j)) / w;
                 bbox.h = e.at(l, 1) * std::exp(r.at(l, 3, i, j)) / h;
 
-                dets.push_back(
-                    std::make_unique<darknet::detection_t>(classes, coords));
+                dets.push_back(std::make_unique<darknet::detection_t>(classes));
                 const auto &d = dets[dets.size() - 1];
 
                 d->scale = r.at(l, 4, i, j);

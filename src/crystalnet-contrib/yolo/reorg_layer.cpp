@@ -9,7 +9,7 @@
 namespace darknet
 {
 
-struct reorg_op {
+template <bool use_origin = true> struct reorg_op_t {
     constexpr static uint8_t arity = 1;
 
     shape_t infer(const shape_list_t &shape_list) const
@@ -43,7 +43,6 @@ struct reorg_op {
         const auto [n, c, _2h, _2w] = x.shape.dims;
         const auto [_n, _4c, h, w] = y.shape.dims;
 
-        const bool use_origin = true;
         if (use_origin) {
             reorg_cpu(x.data, 2 * w, 2 * h, c, n, 2, 0, y.data);
             return;
@@ -78,6 +77,7 @@ struct reorg_op {
 };
 
 struct reorg_layer : s_layer_t {
+    using reorg_op = reorg_op_t<true>;
     std::unique_ptr<reorg_op> _op;
     const operator_t *op;
 
