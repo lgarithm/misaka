@@ -104,7 +104,7 @@ set_trace_log_t::set_trace_log_t(const std::string &name, bool reuse,
 set_trace_log_t::~set_trace_log_t()
 {
     ctx.indent();
-    ctx.logf1(stdout, "stop logging to %s", name.c_str());
+    ctx.logf1(stdout, "stop logging to file://%s", name.c_str());
     FILE *fp = ctx.log_files.front();
     ctx.log_files.pop_front();
     std::fclose(fp);

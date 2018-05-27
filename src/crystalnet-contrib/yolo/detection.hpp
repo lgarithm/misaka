@@ -34,8 +34,7 @@ struct detection_t {
     tensor_t probs;
 
     float objectness;
-
-    int i, j;
+    float scale;
 
     detection_t(int classes, int coords)
         : classes(classes), probs(shape_t(classes), idx_type<T>::type)

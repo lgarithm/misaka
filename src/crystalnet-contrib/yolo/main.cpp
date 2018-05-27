@@ -19,6 +19,8 @@
 
 namespace fs = std::experimental::filesystem;
 
+const fs::path home(std::getenv("HOME"));
+
 void run(const options_t &opt)
 {
     const auto names = load_name_list(opt.darknet_path / "data/coco.names");
@@ -61,6 +63,7 @@ void run(const options_t &opt)
     }
     {
         TRACE("main::print layers");
+        SET_TRACE_LOG(home / "Desktop/diff/cn-layers.txt");
         using T = float;
         logf("input %-3d %s", 0, summary(r_tensor_ref_t<T>(*input)).c_str());
         show_layers(*p_model, *s_model);
@@ -80,12 +83,13 @@ void run(const options_t &opt)
     }();
     {
         TRACE("main::print detections");
-        SET_TRACE_LOG(fs::path(std::getenv("HOME")) /
-                      "Desktop/diff/cn-bboxes.txt");
+        SET_TRACE_LOG(home / "Desktop/diff/cn-bboxes.txt");
         int i = 0;
         for (const auto &d : dets) {
             const auto b = d->bbox;
-            logf("box %-4d: (%f, %f) [%f, %f]", i++, b.cx, b.cy, b.w, b.h);
+            logf("box %-4d: %s (%f, %f) [%f, %f]", i++,             //
+                 summary(r_tensor_ref_t<float>(d->probs)).c_str(),  //
+                 b.cx, b.cy, b.w, b.h);
         }
     }
     {
@@ -101,9 +105,9 @@ void run(const options_t &opt)
             const auto probs = ranked<1, T>(ref(d->probs));
             const auto idx =
                 std::max_element(probs.data, probs.data + 80) - probs.data;
-            if (probs.at(idx) > 0.8) {
-                // logf("%d (%-32s): %f", idx, names.at(idx).c_str(),
-                //      probs.at(idx));
+            if (d->scale > 0.55 && probs.at(idx) > 0.55) {
+                logf("%d (%-32s): %f", idx, names.at(idx).c_str(),
+                     probs.at(idx));
                 const auto c =
                     rasterize(d->bbox, yolov2_input_size, yolov2_input_size);
                 draw_clip(ry, c);
