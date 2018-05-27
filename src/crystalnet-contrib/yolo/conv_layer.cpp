@@ -1,9 +1,8 @@
-#include "conv_layer.h"
-
 #include <crystalnet-contrib/darknet/darknet.h>
 #include <crystalnet-contrib/yolo/activation.hpp>
 #include <crystalnet-contrib/yolo/batch_normalization.hpp>
 #include <crystalnet-contrib/yolo/bias_layer.hpp>
+#include <crystalnet-contrib/yolo/conv_layer.h>
 #include <crystalnet-contrib/yolo/yolo.hpp>
 #include <crystalnet-internal.h>
 #include <crystalnet/core/cast.hpp>

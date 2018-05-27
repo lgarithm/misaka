@@ -14,12 +14,6 @@ template <typename T, typename F> void pointwise(T *begin, T *end, const F &f)
     std::transform(begin, end, begin, f);
 }
 
-// template <typename T, typename F, uint8_t r>
-// void pointwise(const ranked_tensor_ref_t<T, r> &t, const F &f)
-// {
-//     std::transform(t.data, t.data + t.shape.dim(), t.data, f);
-// }
-
 template <typename T> struct logistic {
     T operator()(T x) const { return (T)1. / ((T)1. + std::exp(-x)); }
 };

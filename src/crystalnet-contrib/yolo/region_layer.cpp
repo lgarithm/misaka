@@ -108,17 +108,17 @@ struct region_op {
             return;
         }
 
+        const auto act = logistic<T>();
+
         for (auto b : range(batch_size)) {
             for (auto nn : range(n)) {
                 const auto yy = y[b][nn];  // [C + 1 + K, h, w]
                 const uint32_t stride = h * w;
                 for (auto i : range(h)) {
                     for (auto j : range(w)) {
-                        const auto act = logistic<T>();
                         act(yy[0].at(i, j));
                         act(yy[1].at(i, j));
                         act(yy[4].at(i, j));
-                        //
                         const auto data = yy[5].data + i * w + j;
                         softmax(classes, stride, data, data);
                     }

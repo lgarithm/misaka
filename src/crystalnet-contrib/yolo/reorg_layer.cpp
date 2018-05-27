@@ -1,6 +1,5 @@
-#include "reorg_layer.h"
-
 #include <crystalnet-contrib/darknet/darknet.h>
+#include <crystalnet-contrib/yolo/reorg_layer.h>
 #include <crystalnet-internal.h>
 #include <crystalnet/core/cast.hpp>
 #include <crystalnet/core/operator.hpp>  // TODO: don't include private headers

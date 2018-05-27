@@ -1,5 +1,4 @@
-#include "route_layer.h"
-
+#include <crystalnet-contrib/yolo/route_layer.h>
 #include <crystalnet-internal.h>
 #include <crystalnet/core/cast.hpp>
 #include <crystalnet/core/operator.hpp>  // TODO: don't include private headers

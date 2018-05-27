@@ -106,7 +106,7 @@ void run(const options_t &opt)
             const auto idx =
                 std::max_element(probs.data, probs.data + 80) - probs.data;
             if (d->scale > 0.55 && probs.at(idx) > 0.55) {
-                logf("%d (%-32s): %f", idx, names.at(idx).c_str(),
+                logf("%-4d (%s): %f", idx, names.at(idx).c_str(),
                      probs.at(idx));
                 const auto c =
                     rasterize(d->bbox, yolov2_input_size, yolov2_input_size);
