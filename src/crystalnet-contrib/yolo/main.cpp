@@ -55,11 +55,6 @@ void run(const options_t &opt)
         // });
     } {
         TRACE("main::inference");
-        {
-            using T = float;
-            const auto brief = summary(r_tensor_ref_t<T>(*input));
-            logf("input: %s", brief.c_str());
-        }
         const auto r = ref(*input);
         p_model->input.bind(r.reshape(r.shape.batch(1)));
         p_model->forward();
@@ -83,9 +78,18 @@ void run(const options_t &opt)
         // logf("%s", summary(r_tensor_ref_t<T>(anchor_boxes)).c_str());
         return get_detections(y, anchor_boxes);
     }();
-
     {
-        // TRACE("main::draw detections");
+        TRACE("main::print detections");
+        SET_TRACE_LOG(fs::path(std::getenv("HOME")) /
+                      "Desktop/diff/cn-bboxes.txt");
+        int i = 0;
+        for (const auto &d : dets) {
+            const auto b = d->bbox;
+            logf("box %-4d: (%f, %f) [%f, %f]", i++, b.cx, b.cy, b.w, b.h);
+        }
+    }
+    {
+        TRACE("main::draw detections");
         using T = float;
         const auto n = input->shape.dim();
         const auto x = chw_to_hwc<T>(ref(*input));

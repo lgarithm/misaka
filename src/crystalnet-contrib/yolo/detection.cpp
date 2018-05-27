@@ -33,10 +33,10 @@ detection_list_t get_detections(const tensor_ref_t &t,
                 const T c3 = r.at(l, 3, i, j);
 
                 darknet::bbox_t bbox;
-                bbox.cy = (j + c1) / h;
-                bbox.cx = (i + c0) / w;
-                bbox.h = e.at(l, 1) * std::exp(c3) / h;
+                bbox.cx = (j + c0) / w;
+                bbox.cy = (i + c1) / h;
                 bbox.w = e.at(l, 0) * std::exp(c2) / w;
+                bbox.h = e.at(l, 1) * std::exp(c3) / h;
 
                 dets.push_back(
                     std::make_unique<darknet::detection_t>(classes, coords));

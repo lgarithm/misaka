@@ -15,12 +15,6 @@ std::string summary(float *x, int n)
 void reorg_cpu(float *x, int w, int h, int c, int batch, int stride,
                int forward, float *out)
 {
-    TRACE(__func__);
-    logf("forward: %d", forward);
-    logf("h: %d", h);
-    logf("w: %d", w);
-    logf("reorg_cpu::x %s", summary(x, batch * c * h * w).c_str());
-
     int b, i, j, k;
     int out_c = c / (stride * stride);
 
@@ -43,8 +37,6 @@ void reorg_cpu(float *x, int w, int h, int c, int batch, int stride,
             }
         }
     }
-
-    logf("reorg_cpu::out %s", summary(out, batch * c * h * w).c_str());
 }
 
 float im2col_get_pixel(float *im, int height, int width, int channels, int row,
