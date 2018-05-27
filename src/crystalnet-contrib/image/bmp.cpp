@@ -77,8 +77,8 @@ tensor_t *read_bmp_file(const char *filename)
     std::fclose(fp);
     using T = float;
     tensor_t *_t = new tensor_t(shape, idx_type<T>::type);
-    T *_r = (T *)_t->data;
-    for (int i = 0; i < n; ++i) { _r[i] = pixels[i] / 255.0; }
+    const r_tensor_ref_t<T> r(*_t);
+    for (int i = 0; i < n; ++i) { r.data[i] = pixels[i] / 255.0; }
     return _t;
 }
 

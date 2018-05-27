@@ -62,10 +62,9 @@ const tensor_t *image_to_chw(const cv::Mat image)
     for (uint32_t i = 0; i < h; ++i) {
         for (uint32_t j = 0; j < w; ++j) {
             const auto pix = image.at<cv::Vec3b>(i, j);
-            // TODO: double check
-            r.at(0, i, j) = pix[0] / 255.0;
+            r.at(0, i, j) = pix[2] / 255.0;
             r.at(1, i, j) = pix[1] / 255.0;
-            r.at(2, i, j) = pix[2] / 255.0;
+            r.at(2, i, j) = pix[0] / 255.0;
         }
     }
     return t;

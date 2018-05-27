@@ -38,10 +38,7 @@ void run(const options_t &opt)
         // TRACE(__func__);
         return yolov2();
     }();
-
     {
-        // TRACE("main::draw symbolic model");
-        // show_layers(*s_model);
         FILE *fp = fopen("graph.dot", "w");
         graphviz(*s_model, fp);
         fclose(fp);
@@ -51,11 +48,6 @@ void run(const options_t &opt)
     const model_t *p_model = [&]() { return realize(p_ctx, s_model, 1); }();
     load_parameters(p_model, opt.model_dir);
     {
-        // TRACE("main::print parameters");
-        // debug<tensor_t>(*p_ctx, [](const tensor_t *value) {
-        //     return summary(r_tensor_ref_t<float>(*value));
-        // });
-    } {
         TRACE("main::inference");
         const auto r = ref(*input);
         p_model->input.bind(r.reshape(r.shape.batch(1)));
@@ -67,10 +59,6 @@ void run(const options_t &opt)
         using T = float;
         logf("input %-3d %s", 0, summary(r_tensor_ref_t<T>(*input)).c_str());
         show_layers(*p_model, *s_model);
-    }
-    {
-        // TRACE("main::save layers");
-        // save_layers(*p_model, *s_model);
     }
     const auto dets = [&]() {
         using T = float;
@@ -96,11 +84,12 @@ void run(const options_t &opt)
         TRACE("main::draw detections");
         using T = float;
         const auto n = input->shape.dim();
-        const auto x = chw_to_hwc<T>(ref(*input));
-        const tensor_t y(x->shape, dtypes.u8);
-        std::transform((T *)x->data, (T *)x->data + n, (uint8_t *)y.data,
+        const auto _x = chw_to_hwc<T>(ref(*input));
+        const auto x = r_tensor_ref_t<T>(*_x);
+        const tensor_t _y(x.shape, dtypes.u8);
+        const auto y = ranked<3, uint8_t>(ref(_y));
+        std::transform(x.data, x.data + n, y.data,
                        [](T v) { return (uint8_t)(v * 255); });
-        const auto ry = ranked<3, uint8_t>(ref(y));
         for (const auto &d : dets) {
             const auto probs = ranked<1, T>(ref(d->probs));
             const auto idx =
@@ -110,10 +99,10 @@ void run(const options_t &opt)
                      probs.at(idx));
                 const auto c =
                     rasterize(d->bbox, yolov2_input_size, yolov2_input_size);
-                draw_clip(ry, c);
+                draw_clip(y, c);
             }
         }
-        write_bmp_file("input.bmp", ry);
+        write_bmp_file("input.bmp", y);
     }
 
     del_model(p_model);

@@ -78,9 +78,9 @@ template <bool use_origin = true> struct region_op_t {
     shape_t _infer(const shape_list_t &shape_list) const
     {
         const auto [p, q] = cast<arity>(shape_list.shapes, auto_hint);
-        const auto [b, c, h, w] = cast<4>(p.dims, auto_hint);
-        check(this->h == h);
-        check(this->w == w);
+        const auto [b, c, height, width] = cast<4>(p.dims, auto_hint);
+        check(this->h == height);
+        check(this->w == width);
         check(c == n * m);
         check(q == shape_t(n, 2));
         return p;
