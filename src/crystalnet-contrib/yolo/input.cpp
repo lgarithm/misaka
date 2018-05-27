@@ -75,7 +75,6 @@ const tensor_t *load_test_image(const char *filename)
 {
     const auto img = cv::imread(filename);
     const auto input_image = normalize(img);
-    cv::imwrite("input.bmp", input_image);  // TODO: remove
     return image_to_chw(input_image);
 }
 
@@ -121,7 +120,6 @@ void load_parameters(const model_t *model, const fs::path &model_dir)
 
 std::vector<std::string> load_name_list(const fs::path &filename)
 {
-    TRACE(__func__);
     logf("%s", filename.c_str());
     std::vector<std::string> names;
     std::string line;

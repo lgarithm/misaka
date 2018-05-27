@@ -89,8 +89,9 @@ void show_layers(const model_ctx_t &ctx, const s_model_ctx_t &s_ctx)
         using T = float;
         const auto r = r_tensor_ref_t<T>(node->value());
         const auto brief = summary(r);
-        logf("layer %6d  %-16s  %-32s    %s", idx++, l->name.c_str(),
-             std::to_string(l->shape).c_str(), brief.c_str());
+        // logf("layer %6d  %-16s  %-32s    %s", idx++, l->name.c_str(),
+        //      std::to_string(l->shape).c_str(), brief.c_str());
+        logf("layer %-3d %s", idx++, summary(r).c_str());
     }
 }
 

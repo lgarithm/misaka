@@ -1,5 +1,6 @@
 #include "reorg_layer.h"
 
+#include <crystalnet-contrib/darknet/darknet.h>
 #include <crystalnet-internal.h>
 #include <crystalnet/core/cast.hpp>
 #include <crystalnet/core/operator.hpp>  // TODO: don't include private headers
@@ -36,9 +37,18 @@ struct reorg_op {
     // [N, C, 2H, 2W] -> [N, 4C, H, W]
     void forward(const forward_ctx_t &ctx) const
     {
-        const auto [x] = cast<arity>(ctx.inputs._args, auto_hint);
-        const auto [n, c, _2h, _2w] = cast<4>(x.shape.dims, auto_hint);
-        const auto [_n, _4c, h, w] = cast<4>(ctx.output.shape.dims, auto_hint);
+        const auto [_x] = cast<arity>(ctx.inputs._args, auto_hint);
+        const auto x = ranked<4, T>(_x);
+        const auto y = ranked<4, T>(ctx.output);
+
+        const auto [n, c, _2h, _2w] = x.shape.dims;
+        const auto [_n, _4c, h, w] = y.shape.dims;
+
+        const bool use_origin = true;
+        if (use_origin) {
+            reorg_cpu(x.data, 2 * w, 2 * h, c, n, 2, 0, y.data);
+            return;
+        }
 
         for (const auto b : range(n)) {
             const auto xx = x[b];
@@ -47,7 +57,7 @@ struct reorg_op {
             // C times ([1, 2H, 2W] -> [4, H, W])
             // TODO: verify
             for (const auto l : range(c)) {
-                const auto xxx = ranked<2, T>(xx[l]);
+                const auto xxx = xx[l];
                 const auto yyy = ranked<3, T>(yy.slice(l * 4, (l + 1) * 4));
                 for (const auto k : range(4)) {
                     const auto gx = k / 2;

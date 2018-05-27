@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
-add_definitions(-funroll-loops)
+# add_definitions(-funroll-loops)
 if (${USE_OPENBLAS})
     add_definitions(-DCRYSTALNET_USE_CBLAS)
     set(OPENBLAS_PATH $ENV{HOME}/local/openblas)

@@ -7,7 +7,6 @@
 detection_list_t get_detections(const tensor_ref_t &t,
                                 const tensor_ref_t &biases)
 {
-    TRACE(__func__);
     using T = float;
 
     const uint32_t n = 5;
