@@ -78,12 +78,10 @@ template <bool use_origin = true> struct reorg_op_t {
 
 struct reorg_layer : s_layer_t {
     using reorg_op = reorg_op_t<true>;
-    std::unique_ptr<reorg_op> _op;
     const operator_t *op;
 
     reorg_layer()
-        : _op(new reorg_op),
-          op(_register_generic_bi_op("darknet::reorg", _op.get()))
+        : op(_register_generic_bi_op(gc(new reorg_op), "darknet::reorg"))
     {
     }
 

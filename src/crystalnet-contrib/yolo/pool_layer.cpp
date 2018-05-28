@@ -98,12 +98,12 @@ struct max_pool_op {
 struct max_pool_layer : s_layer_t {
     const uint32_t size;
     const uint32_t stride;
-    std::unique_ptr<max_pool_op> _op;
     const operator_t *op;
 
     max_pool_layer(uint32_t size, uint32_t stride)
-        : size(size), stride(stride), _op(new max_pool_op(size, stride)),
-          op(_register_generic_bi_op("darknet::max_pool", _op.get()))
+        : size(size), stride(stride),
+          op(_register_generic_bi_op(gc(new max_pool_op(size, stride)),
+                                     "darknet::max_pool"))
     {
     }
 

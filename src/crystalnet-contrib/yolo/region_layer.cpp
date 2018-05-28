@@ -141,13 +141,12 @@ struct region_layer : s_layer_t {
     const int w;  // 13
 
     using region_op = region_op_t<true>;
-    std::unique_ptr<region_op> _op;
     const operator_t *op;
 
     region_layer(int h, int w, int n, int classes, int coords)
         : h(h), w(w), n(n), classes(classes), coords(coords),
-          _op(new region_op(h, w, n, classes, coords)),
-          op(_register_generic_bi_op("darknet::region", _op.get()))
+          op(_register_generic_bi_op(
+              gc(new region_op(h, w, n, classes, coords)), "darknet::region"))
     {
     }
 
