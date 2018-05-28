@@ -21,8 +21,6 @@ struct conv_nhwc : s_layer_t {
 
     s_node_t *operator()(s_model_ctx_t &ctx, s_node_t *x) const override
     {
-        static GC<initializer_t> gc;
-
         const auto bias_init = gc(new constant_initializer_t(0.1));
         const auto weight_init = gc(new truncated_normal_initializer_t(0.1));
         const auto c = last_dim(x->shape);
