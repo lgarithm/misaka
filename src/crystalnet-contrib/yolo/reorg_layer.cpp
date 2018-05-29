@@ -2,8 +2,8 @@
 #include <crystalnet-contrib/yolo/reorg_layer.h>
 #include <crystalnet-internal.h>
 #include <crystalnet/core/cast.hpp>
+#include <crystalnet/core/layer.hpp>
 #include <crystalnet/core/operator.hpp>  // TODO: don't include private headers
-#include <crystalnet/layers/layer.hpp>
 #include <crystalnet/utility/range.hpp>
 
 namespace darknet

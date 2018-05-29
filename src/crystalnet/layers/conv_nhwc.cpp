@@ -1,7 +1,6 @@
-#pragma once
-#include <crystalnet.h>
+#include <crystalnet-ext.h>
 #include <crystalnet/core/gc.hpp>
-#include <crystalnet/layers/layer.hpp>
+#include <crystalnet/core/layer.hpp>
 #include <crystalnet/ops/const.hpp>
 #include <crystalnet/ops/truncated_normal.hpp>
 
@@ -32,3 +31,8 @@ struct conv_nhwc : s_layer_t {
         return y;
     }
 };
+
+s_layer_t *const new_layer_conv_nhwc(uint32_t r, uint32_t s, uint32_t d)
+{
+    return new conv_nhwc(r, s, d);
+}

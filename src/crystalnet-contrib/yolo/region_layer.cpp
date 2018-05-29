@@ -6,8 +6,8 @@
 #include <crystalnet-contrib/yolo/yolo.hpp>
 #include <crystalnet-internal.h>
 #include <crystalnet/core/cast.hpp>
+#include <crystalnet/core/layer.hpp>
 #include <crystalnet/core/operator.hpp>  // TODO: don't include private headers
-#include <crystalnet/layers/layer.hpp>
 #include <crystalnet/utility/range.hpp>
 
 // TODO: use proxy tensor

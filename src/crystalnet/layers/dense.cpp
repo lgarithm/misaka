@@ -1,7 +1,6 @@
-#pragma once
-#include <crystalnet.h>
+#include <crystalnet-ext.h>
 #include <crystalnet/core/gc.hpp>
-#include <crystalnet/layers/layer.hpp>
+#include <crystalnet/core/layer.hpp>
 #include <crystalnet/ops/const.hpp>
 #include <crystalnet/ops/truncated_normal.hpp>
 
@@ -21,3 +20,5 @@ struct dense : s_layer_t {
         return ctx.make_operator(*op_add, y, b);
     }
 };
+
+s_layer_t *const new_layer_dense(uint32_t n) { return new dense(n); }

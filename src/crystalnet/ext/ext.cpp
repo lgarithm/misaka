@@ -1,8 +1,8 @@
 #include <crystalnet-ext.h>
 #include <crystalnet/core/error.hpp>
 #include <crystalnet/core/gc.hpp>
+#include <crystalnet/core/layer.hpp>
 #include <crystalnet/ext/traits.hpp>
-#include <crystalnet/layers/layer.hpp>
 #include <crystalnet/ops/const.hpp>
 #include <crystalnet/ops/truncated_normal.hpp>
 
