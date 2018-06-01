@@ -5,18 +5,18 @@
 #include <map>
 #include <string>
 
-#include <crystalnet/core/error.hpp>
-
 struct tracer_ctx_t {
     const std::string name;
-
+    const std::chrono::time_point<std::chrono::system_clock> t0;
     int depth;
+
     using duration_t = std::chrono::duration<double>;
     std::map<std::string, duration_t> total_durations;
     std::map<std::string, uint32_t> call_times;
     std::deque<FILE *> log_files;
 
-    explicit tracer_ctx_t(const std::string &name) : name(name), depth(0)
+    explicit tracer_ctx_t(const std::string &name)
+        : name(name), t0(std::chrono::system_clock::now()), depth(0)
     {
         log_files.push_front(stdout);
     }

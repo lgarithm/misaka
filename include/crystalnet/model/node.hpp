@@ -125,7 +125,7 @@ struct operator_node_t : node_t {
         // TODO: op.forward must be present
         if (op.forward) {
             forward_ctx_t ctx(_input_refs(), ref(_value));
-            // TRACE_NAME(name, (*op.forward)(ctx));
+            TRACE_NAME(name, (*op.forward)(ctx));
             (*op.forward)(ctx);
         }
     }

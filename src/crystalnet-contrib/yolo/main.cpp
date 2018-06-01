@@ -120,6 +120,7 @@ void run(const options_t &opt)
 
 int main(int argc, char *argv[])
 {
+    TRACE(__func__);
     const auto opt = parse_flags(argc, argv);
     try {
         run(opt);
