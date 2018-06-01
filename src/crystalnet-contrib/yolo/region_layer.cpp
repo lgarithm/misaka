@@ -46,7 +46,7 @@ void softmax(uint32_t n, uint32_t stride, T *input, T *output)
     for (auto i : range(n)) { y[i] /= sum; }
 }
 
-template <bool use_origin = true> struct region_op_t {
+struct region_op_t {
     constexpr static uint8_t arity = 2;
 
     const int n;        // 5
@@ -134,13 +134,12 @@ struct region_layer : s_layer_t {
     const int h;  // 13
     const int w;  // 13
 
-    using region_op = region_op_t<true>;
     const operator_t *op;
 
     region_layer(int h, int w, int n, int classes, int coords)
         : h(h), w(w), n(n), classes(classes), coords(coords),
           op(_register_generic_bi_op(
-              gc(new region_op(h, w, n, classes, coords)), "darknet::region"))
+              gc(new region_op_t(h, w, n, classes, coords)), "darknet::region"))
     {
     }
 
