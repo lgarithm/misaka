@@ -1,11 +1,8 @@
 // https://github.com/pjreddie/darknet.git
 
-#include <cfloat>
-#include <string>
+#include <float.h>
 
 #include <crystalnet-contrib/darknet/darknet.h>
-#include <crystalnet/core/tensor.hpp>
-#include <crystalnet/core/tracer.hpp>
 
 // the original implementation, which is likely wrong.
 void reorg_cpu(float *x, int w, int h, int c, int batch, int stride,
