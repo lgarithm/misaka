@@ -9,7 +9,7 @@ s_model_t *slp(const shape_t *image_shape, uint8_t arity)
     const shape_t *weight_shape = new_shape(2, shape_dim(image_shape), arity);
     const shape_t *x_wrap_shape = new_shape(1, shape_dim(image_shape));
 
-    s_model_ctx_t *ctx = make_s_model_ctx();
+    context_t *ctx = new_context();
     s_node_t *x = var(ctx, image_shape);
     s_node_t *x_ = reshape(ctx, x_wrap_shape, x);
     s_node_t *w = covar(ctx, weight_shape);

@@ -3,19 +3,17 @@
 // y = softmax(flatten(x) * w + b)
 s_model_t *slp(const shape_t *image_shape, uint8_t arity)
 {
-    shape_ctx_t *sc = new_shape_ctx();
-    s_model_ctx_t *ctx = make_s_model_ctx();
+    context_t *ctx = new_context();
 
     symbol x = var(ctx, image_shape);
-    symbol x_ = reshape(ctx, mk_shape(sc, 1, shape_dim(image_shape)), x);
-    symbol w = covar(ctx, mk_shape(sc, 2, shape_dim(image_shape), arity));
-    symbol b = covar(ctx, mk_shape(sc, 1, arity));
+    symbol x_ = reshape(ctx, mk_shape(ctx, 1, shape_dim(image_shape)), x);
+    symbol w = covar(ctx, mk_shape(ctx, 2, shape_dim(image_shape), arity));
+    symbol b = covar(ctx, mk_shape(ctx, 1, arity));
 
     symbol op1 = apply(ctx, op_mul, (symbol[]){x_, w});
     symbol op2 = apply(ctx, op_add, (symbol[]){op1, b});
     symbol op3 = apply(ctx, op_softmax, (symbol[]){op2});
 
-    del_shape_ctx(sc);
     return new_s_model(ctx, x, op3);
 }
 

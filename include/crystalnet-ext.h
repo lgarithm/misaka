@@ -36,8 +36,8 @@ extern s_layer_t *const new_layer_pool_max();
 
 // layer combinators
 typedef s_layer_t const *p_layer_t;
-extern s_node_t *transform(s_model_ctx_t *, const s_layer_t *, s_node_t *);
-extern s_node_t *transform_all(s_model_ctx_t *, p_layer_t layers[], s_node_t *);
+extern s_node_t *transform(context_t *, const s_layer_t *, s_node_t *);
+extern s_node_t *transform_all(context_t *, p_layer_t layers[], s_node_t *);
 
 // debug APIs
 extern void s_model_info(const s_model_t *);

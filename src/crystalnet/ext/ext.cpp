@@ -79,7 +79,7 @@ s_layer_t *const new_layer_conv2d(const filter_trait_t *p_filter,
     return new conv2d_layer(op, filter);
 }
 
-s_node_t *transform_all(s_model_ctx_t *ctx, p_layer_t layers[], s_node_t *x)
+s_node_t *transform_all(context_t *ctx, p_layer_t layers[], s_node_t *x)
 {
     for (p_layer_t *pl = layers; *pl; ++pl) { x = transform(ctx, *pl, x); }
     return x;
