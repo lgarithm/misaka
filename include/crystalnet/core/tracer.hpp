@@ -86,3 +86,14 @@ template <typename... Args> void logf(const Args &... args)
 {
     default_tracer_ctx.logf(args...);
 }
+
+template <bool enable = false, typename F, typename... Arg>
+void trace_call(const std::string &name, F &f, Arg &... args)
+{
+    if (enable) {
+        tracer_t _(name, default_tracer_ctx);
+        f(args...);
+    } else {
+        f(args...);
+    }
+}
