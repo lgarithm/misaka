@@ -1,3 +1,5 @@
+#include <cstdarg>
+
 #include <crystalnet/core/user_context.hpp>
 
 context_t *new_context() { return new context_t; }
