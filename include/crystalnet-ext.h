@@ -45,7 +45,8 @@ extern dataset_t *new_fake_dataset(const shape_t *, uint32_t);
 extern void debug_tensor(const char *, const tensor_ref_t *);
 
 // high level export APIs
-typedef s_model_t *(classification_model_func_t)(const shape_t *, uint32_t);
+typedef s_model_t *(classification_model_func_t)(context_t *, const shape_t *,
+                                                 uint32_t);
 typedef struct classifier_t classifier_t;
 extern classifier_t *new_classifier(classification_model_func_t,
                                     const shape_t *, uint32_t);
