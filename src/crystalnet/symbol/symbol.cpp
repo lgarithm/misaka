@@ -7,13 +7,6 @@
 #include <crystalnet/symbol/model.hpp>
 #include <crystalnet/symbol/node.hpp>
 
-s_model_t *new_s_model(context_t *ctx, s_node_t *input, s_node_t *output)
-{
-    return new s_model_t(*ctx, *input, *output);
-}
-
-void del_s_model(const s_model_t *model) { delete model; }
-
 model_t *realize(parameter_ctx_t *p_ctx, const s_model_t *m,
                  uint32_t batch_size)
 {

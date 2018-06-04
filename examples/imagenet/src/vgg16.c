@@ -5,9 +5,8 @@
 #include "vgg16.h"
 
 // https://www.cs.toronto.edu/~frossard/post/vgg16/
-s_model_t *vgg16(const shape_t *image_shape, uint32_t arity)
+s_model_t *vgg16(context_t *ctx, const shape_t *image_shape, uint32_t arity)
 {
-    context_t *ctx = new_context();
     trait_ctx_t *tc = new_trait_ctx();
 
     s_layer_t *c1 = new_layer_conv2d(                //
@@ -60,5 +59,5 @@ s_model_t *vgg16(const shape_t *image_shape, uint32_t arity)
     del_s_layer(relu);
     del_s_layer(out);
     printf("[y] creating model\n");
-    return new_s_model(ctx, x, y);
+    return make_s_model(ctx, x, y);
 }

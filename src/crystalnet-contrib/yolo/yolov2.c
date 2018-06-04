@@ -11,9 +11,8 @@
 
 const uint32_t yolov2_input_size = 416;
 
-s_model_t *yolov2()
+s_model_t *yolov2(context_t *ctx)
 {
-    context_t *ctx = new_context();
     const shape_t *input_shape =
         mk_shape(ctx, 3, 3, yolov2_input_size, yolov2_input_size);
 
@@ -84,5 +83,5 @@ s_model_t *yolov2()
         },
         l28);
 
-    return new_s_model(ctx, x, y);
+    return make_s_model(ctx, x, y);
 }

@@ -60,3 +60,10 @@ s_node_t *transform(context_t *ctx, const s_layer_t *l, s_node_t *x)
 {
     return ctx->_layers((*l)(*ctx, x));
 }
+
+// s_model resources
+
+s_model_t *make_s_model(context_t *ctx, s_node_t *input, s_node_t *output)
+{
+    return ctx->make_s_model(new s_model_t(*ctx, *input, *output));
+}

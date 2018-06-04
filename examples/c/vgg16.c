@@ -5,9 +5,8 @@
 typedef shape_t const *p_shape_t;
 
 // https://www.cs.toronto.edu/~frossard/post/vgg16/
-s_model_t *vgg16(const shape_t *image_shape, uint32_t arity)
+s_model_t *vgg16(context_t *ctx, const shape_t *image_shape, uint32_t arity)
 {
-    context_t *ctx = new_context();
     trait_ctx_t *tc = new_trait_ctx();
 
     s_layer_t *c1 = new_layer_conv2d(                //
@@ -59,7 +58,7 @@ s_model_t *vgg16(const shape_t *image_shape, uint32_t arity)
     del_s_layer(relu);
     del_s_layer(out);
     printf("[y] creating model\n");
-    return new_s_model(ctx, x, y);
+    return make_s_model(ctx, x, y);
 }
 
 const uint32_t height = 224;
@@ -77,9 +76,10 @@ dataset_t *fake_imagenet()
 int main()
 {
     const shape_t *image_shape = new_shape(3, height, width, 3);
-    s_model_t *model = vgg16(image_shape, class_number);
+    context_t *ctx = new_context();
+    s_model_t *model = vgg16(ctx, image_shape, class_number);
     s_model_info(model);
-    del_s_model(model);
+    del_context(ctx);
     del_shape(image_shape);
     return 0;
 }

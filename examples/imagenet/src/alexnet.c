@@ -5,9 +5,8 @@
 #include "alexnet.h"
 
 // https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
-s_model_t *alexnet(const shape_t *image_shape, uint32_t arity)
+s_model_t *alexnet(context_t *ctx, const shape_t *image_shape, uint32_t arity)
 {
-    context_t *ctx = new_context();
     trait_ctx_t *tc = new_trait_ctx();
 
     s_layer_t *c1 = new_layer_conv2d(                 //
@@ -57,5 +56,5 @@ s_model_t *alexnet(const shape_t *image_shape, uint32_t arity)
     del_s_layer(relu);
     del_s_layer(out);
     printf("[y] creating model\n");
-    return new_s_model(ctx, x, y);
+    return make_s_model(ctx, x, y);
 }
