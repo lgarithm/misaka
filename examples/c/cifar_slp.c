@@ -21,17 +21,16 @@ int main()
     int height = 32;
     int depth = 3;
     int n = 10;
-    const shape_t *image_shape = new_shape(3, depth, width, height);
     context_t *ctx = new_context();
+    const shape_t *image_shape = mk_shape(ctx, 3, depth, width, height);
     s_model_t *model = slp(ctx, image_shape, n);
     s_trainer_t *trainer = new_s_trainer(model, op_xentropy, opt_sgd);
     dataset_t *ds1 = load_cifar();
     dataset_t *ds2 = load_cifar();
     s_experiment(trainer, ds1, ds2, 10000);
-    del_shape(image_shape);
     del_s_trainer(trainer);
-    del_context(ctx);
     del_dataset(ds1);
     del_dataset(ds2);
+    del_context(ctx);
     return 0;
 }

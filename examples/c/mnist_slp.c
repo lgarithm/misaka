@@ -22,8 +22,8 @@ int main()
     const uint32_t width = 28;
     const uint32_t height = 28;
     const uint32_t n = 10;
-    const shape_t *image_shape = new_shape(2, width, height);
     context_t *ctx = new_context();
+    const shape_t *image_shape = mk_shape(ctx, 2, width, height);
     s_model_t *model = slp(ctx, image_shape, n);
     s_trainer_t *trainer = new_s_trainer(model, op_xentropy, opt_sgd);
     dataset_t *ds1 = load_mnist("train");
@@ -33,6 +33,5 @@ int main()
     del_dataset(ds2);
     del_s_trainer(trainer);
     del_context(ctx);
-    del_shape(image_shape);
     return 0;
 }
