@@ -15,7 +15,8 @@ EXTERNALPROJECT_ADD(libstdtracer
                     GIT_TAG
                     05c6d71afd272b6008504fce66099877c4cec1ef
                     CMAKE_ARGS
-                    -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/3rdparty)
+                    -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/3rdparty
+                    -DCMAKE_CXX_FLAGS=-fPIC) # TODO:  fix in upstream
 
 # add_definitions(-funroll-loops)
 IF(${USE_OPENBLAS})
