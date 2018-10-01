@@ -13,7 +13,7 @@ EXTERNALPROJECT_ADD(libstdtracer
                     GIT_REPOSITORY
                     https://github.com/lgarithm/stdtracer
                     GIT_TAG
-                    f3b8dd4e5aa1addc54cc2635569fa50d1acaa68d
+                    05c6d71afd272b6008504fce66099877c4cec1ef
                     CMAKE_ARGS
                     -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/3rdparty)
 
